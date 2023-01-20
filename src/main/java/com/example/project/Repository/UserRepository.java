@@ -13,7 +13,7 @@ import com.example.project.Model.User;
 public interface UserRepository extends JpaRepository<User,Integer> {
     
     //finding last used passwords from history table
-    @Query(value = "SELECT p.changed_password FROM Password_History p JOIN Users u on p.user_id = u.user_id WHERE u.user_id=?1 order by p.changed_date desc limit 3", nativeQuery=true)
+    @Query(value = "SELECT p.changed_password FROM user_history p JOIN Users u on p.user_id = u.user_id WHERE u.user_id=?1 order by p.changed_date desc limit 3", nativeQuery=true)
     List<String> findPreviousPasswordsByID(int userId);
     
     @Query("SELECT u FROM User u WHERE u.email=?1")

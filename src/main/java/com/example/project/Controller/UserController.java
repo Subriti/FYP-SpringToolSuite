@@ -41,6 +41,12 @@ public class UserController {
 		return userService.findUserByEmail(email);
 	}
 	
+	@GetMapping(path= "/findUserProfile/{email}")
+    public User findUserProfile(@PathVariable String username) {
+        return userService.findUserProfile(username);
+    }
+    
+	
 	@PostMapping(path= "/loginUser")
 	public JSONObject loginUser(@RequestBody Map<String, Object> body) {
 		return userService.Login(body.get("email").toString(),body.get("password").toString());
@@ -57,17 +63,18 @@ public class UserController {
 	}
 
 	@PutMapping(path = "/updateUsers/{userId}")
-	public String updateUser(@PathVariable int userId, @RequestBody User user) {
+	public JSONObject updateUser(@PathVariable int userId, @RequestBody User user) {
+	    System.out.println(user);
 		return userService.updateUser(userId, user);
 	}
 	
 	@PutMapping(path = "/resetPasswordChange/{userId}")
-	public String resetPassword(@PathVariable int userId, @RequestParam(required = false) String user_name, @RequestParam(required = true) String old_password, @RequestParam(required = true) String new_password) {
+	public JSONObject resetPassword(@PathVariable int userId, @RequestParam(required = false) String user_name, @RequestParam(required = true) String old_password, @RequestParam(required = true) String new_password) {
 		return userService.changePassword(userId, old_password, new_password);
 	}
 	
 	@PutMapping(path = "/resetPassword/{userId}")
-	public String requestPasswordChange(@PathVariable int userId, @RequestBody Map<String,Object> body) {
+	public JSONObject requestPasswordChange(@PathVariable int userId, @RequestBody Map<String,Object> body) {
         return userService.changePassword(userId, body.get("old_password").toString(), body.get("new_password").toString());
 	}
 	

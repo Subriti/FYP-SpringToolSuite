@@ -31,6 +31,11 @@ public class CategoryController {
 	 public List<Category> getCategory() {
         return CategoryService.getCategory();
 	}
+	
+	@GetMapping("/showCategory/{TypeId}")
+    public List<Category> getCategoryByType(Type CategoryType) {
+       return CategoryService.getCategoryByType(CategoryType);
+   }
 
     @PostMapping("/addCategory")
     public void addNewCategory(@RequestBody Category Category) {

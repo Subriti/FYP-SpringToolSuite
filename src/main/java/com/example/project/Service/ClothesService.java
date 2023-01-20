@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.project.Model.Clothes;
 import com.example.project.Repository.ClothesRepository;
 
+import net.minidev.json.JSONObject;
+
 @Service
 public class ClothesService {
 
@@ -29,8 +31,12 @@ public class ClothesService {
                 .orElseThrow(() -> new IllegalStateException("Clothes with ID " + clothesId + " does not exist"));
     }
 
-    public String addNewClothes(Clothes clothes) {
+    public JSONObject addNewClothes(Clothes clothes) {
        clothesRepository.save(clothes);
+       JSONObject jsonBody= new JSONObject();
+       jsonBody.put("cloth_id",clothes.getClothId());
+       System.out.println(jsonBody);
+       return jsonBody;
        //return clothes.getClothId() or jsonBody.put("Cloth ID",clothes.getClothId());
        /*
         * Post post = new Post();
@@ -42,7 +48,7 @@ public class ClothesService {
         * post.setClothId(cloth);
         */
        //PostRepository.save(clothes);
-       return "Clothes Successfully Registered !!";
+       //return "Clothes Successfully Registered !!";
     }
 
     public void deleteClothes(int clothesId) {

@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.project.Model.Post;
+import com.example.project.Model.User;
 import com.example.project.Service.PostService;
+
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping(path = "api/post")
@@ -31,8 +34,8 @@ public class PostController {
         return postService.getPosts();
 	}
 	
-	@GetMapping("/showUserPosts")
-    public List<Post> getUserPost(@PathVariable int userId) {
+	@GetMapping("/showUserPosts/{postBy}")
+    public List<Post> getUserPost(@PathVariable("postBy") User userId) {
        return postService.getUserPosts(userId);
    }
 	
@@ -43,8 +46,8 @@ public class PostController {
     }
 
     @PostMapping("/addPost")
-    public void addNewPost(@RequestBody Post post) {
-    	postService.addNewPost(post);
+    public JSONObject addNewPost(@RequestBody Post post) {
+    	return postService.addNewPost(post);
 	}
 
     @DeleteMapping(path= "/deletePost/{postId}")

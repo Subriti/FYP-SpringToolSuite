@@ -63,6 +63,14 @@ public class UserService implements UserDetailsService {
         }
        return user;
     }
+    
+    public User findUserProfile(String username) {
+        User user= userRepository.findByusername(username);
+        if (user==null) {
+            throw new IllegalStateException("User with username " + username + "does not exist");
+        }
+       return user;
+    }
 
     public JSONObject addNewUser(User user) {
         JSONObject jsonObject= new JSONObject();
@@ -110,6 +118,7 @@ public class UserService implements UserDetailsService {
             jsonObject.put("birth_date", user.getBirth_date());
             jsonObject.put("location", user.getLocation());
             jsonObject.put("phone_number", user.getPhoneNumber());
+            jsonObject.put("profile_picture", user.getProfilePicture());
             return jsonObject;
         }
         jsonObject.clear();
@@ -126,7 +135,9 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public String updateUser(int userId, User Newuser) {
+    public JSONObject updateUser(int userId, User Newuser) {
+        JSONObject jsonObject = new JSONObject();
+        
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
 
@@ -136,7 +147,9 @@ public class UserService implements UserDetailsService {
             // checking if new username is available
             Optional<User> userOptional = userRepository.findUserByUsername(Newuser.getUserName());
             if (userOptional.isPresent()) {
-                return "Username is already taken";
+                jsonObject.clear();
+                jsonObject.put("Error Message", "Username is already taken");
+                return jsonObject;
             }
             user.setUserName(Newuser.getUserName());
         }
@@ -147,25 +160,13 @@ public class UserService implements UserDetailsService {
             if (PasswordValidator.EmailPatternMatches(Newuser.getEmail())) {
                 user.setEmail(Newuser.getEmail());
             } else {
-                return "Invalid Email";
+                jsonObject.clear();
+                jsonObject.put("Error Message",  "Invalid Email");
+                return jsonObject;
             }
         }
         
-        if (Newuser.getPassword() != null && Newuser.getPassword().length() > 0
-                && !Objects.equals(user.getPassword(), Newuser.getPassword())) {
-            // checking complexity of password
-            if (PasswordValidator.isValid(Newuser.getPassword())) {
-                
-                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-                String hashedPassword = passwordEncoder.encode(Newuser.getPassword());
-
-                user.setPassword(hashedPassword);
-                
-            } else {
-                return "Invalid Password";
-            }
-        }
-
+      
         if (Newuser.getBirth_date() != null && !Objects.equals(user.getBirth_date(), Newuser.getBirth_date())) {
             user.setBirth_date(Newuser.getBirth_date());
         }
@@ -183,23 +184,32 @@ public class UserService implements UserDetailsService {
             user.setLocation(Newuser.getLocation());
         }
         
-        if (Newuser.getProfilePicture() != null && Newuser.getProfilePicture().length() > 0) {
+        if (Newuser.getProfilePicture() != null && Newuser.getProfilePicture().length() > 0 && !Objects.equals(user.getProfilePicture(), Newuser.getProfilePicture())) {
 
             user.setProfilePicture(Newuser.getProfilePicture());
         }
-        
-        return "Successfully updated records";
+        jsonObject.clear();
+        jsonObject.put("Message", "Successfully Updated the records");
+        jsonObject.put("user_id", user.getUserId());
+        jsonObject.put("user_name", user.getUserName());
+        jsonObject.put("email", user.getEmail());
+        jsonObject.put("birth_date", user.getBirth_date());
+        jsonObject.put("location", user.getLocation());
+        jsonObject.put("phone_number", user.getPhoneNumber());
+        jsonObject.put("profile_picture", user.getProfilePicture());
+        return jsonObject;
     }
 
     @Transactional
-    public String changePassword(int userId, String oldPassword, String newPassword) {
+    public JSONObject changePassword(int userId, String oldPassword, String newPassword) {
+
+        JSONObject jsonObject = new JSONObject();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("user with id " + userId + " does not exist"));
 
         // storing last used passwords in a list
         List<String> list = userRepository.findPreviousPasswordsByID(userId);
-        int length = list.size();
         int i = 0;
 
 
@@ -211,7 +221,7 @@ public class UserService implements UserDetailsService {
 
                     if (PasswordValidator.isValid(newPassword)) {
 
-                        while (i < length) {
+                        while (i < list.size()) {
                             if (!BCrypt.checkpw(newPassword, list.get(i))) {
 
                                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -234,19 +244,28 @@ public class UserService implements UserDetailsService {
                                 passwordHistory.setChangedDate(endDate);
                                 passwordHistory.setChangedPassword(hashedPassword);
                                 passwordHistoryRepository.save(passwordHistory);
-                                // return "Successfully Updated the password record";
                             }
                             i++;
                         }
-                        return "Successfully Updated the records";
+                        jsonObject.clear();
+                        jsonObject.put("Message", "Successfully Updated the records");
+                        return jsonObject;
                     }
-                    return "New password doesn't meet required complexity definitions.\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter";
+                    jsonObject.clear();
+                    jsonObject.put("Error", "New password doesn't meet required complexity definitions.\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter");
+                    return jsonObject;
                 }
-                return "New Password cannot be old password";
+                jsonObject.clear();
+                jsonObject.put("Error","New Password cannot be old password");
+                return jsonObject;
             }
-            return "Incorrect Password";
+            jsonObject.clear();
+            jsonObject.put("Error","Incorrect Password");
+            return jsonObject;
         }
-        return "Password Reset Failed";
+        jsonObject.clear();
+        jsonObject.put("Error","Password Reset Failed");
+        return jsonObject;
     }
 
 
@@ -307,12 +326,15 @@ public class UserService implements UserDetailsService {
                 jsonObject.put("birth_date", user.getBirth_date());
                 jsonObject.put("location", user.getLocation());
                 jsonObject.put("phone_number", user.getPhoneNumber());
+                jsonObject.put("profile_picture", user.getProfilePicture());
                 jsonObject.put("token", token);
 
+                System.out.println(jsonObject);
                 return jsonObject;
             }
         }
         jsonObject.put("error", "UserName or Password is invalid");
+        System.out.println("UserName or Password is invalid");
 
         return jsonObject;
     }
@@ -331,4 +353,6 @@ public class UserService implements UserDetailsService {
         String password = user.getPassword();
         return new org.springframework.security.core.userdetails.User(name, password, new ArrayList<>());
     }
+
+   
 }

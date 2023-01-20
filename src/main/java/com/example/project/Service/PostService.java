@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project.Model.Post;
+import com.example.project.Model.User;
 import com.example.project.Repository.PostRepository;
+
+import net.minidev.json.JSONObject;
 
 @Service
 public class PostService {
@@ -22,10 +25,10 @@ public class PostService {
     }
 
     public List<Post> getPosts() {
-        return postRepository.findAll();
+        return postRepository.findAllPosts();
     }
 
-    public List<Post> getUserPosts(int userId) {
+    public List<Post> getUserPosts(User userId) {
         return postRepository.findUserPost(userId);
     }
     
@@ -34,9 +37,11 @@ public class PostService {
                 .orElseThrow(() -> new IllegalStateException("Post with ID " + postId + " does not exist"));
     }
 
-    public String addNewPost(Post post) {
+    public JSONObject addNewPost(Post post) {
        postRepository.save(post);
-       return "Post Successfully Registered !!";
+       JSONObject jsonObject= new JSONObject();
+       jsonObject.put("Success message", "Post Successfully Created !!");
+       return jsonObject;
     }
 
     public void deletePost(int postId) {

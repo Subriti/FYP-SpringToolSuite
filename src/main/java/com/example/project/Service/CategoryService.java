@@ -25,6 +25,10 @@ public class CategoryService {
 		return CategoryRepository.findAll();
 	}
 
+    public List<Category> getCategoryByType(Type TypeId) {
+        return CategoryRepository.findAllByType(TypeId);
+    }
+    
 	public void addNewCategory(Category Category) {
 	    CategoryRepository.save(Category);
 	}
@@ -49,4 +53,5 @@ public class CategoryService {
             Category.setCategoryType(CategoryType);;
         }
 	}
+
 }

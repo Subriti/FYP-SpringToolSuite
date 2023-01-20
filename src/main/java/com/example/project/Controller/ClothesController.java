@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.project.Model.Clothes;
 import com.example.project.Service.ClothesService;
 
+import net.minidev.json.JSONObject;
+
 @RestController
 @RequestMapping(path = "api/clothes")
 public class ClothesController {
@@ -32,8 +34,8 @@ public class ClothesController {
 	}
 
     @PostMapping("/addClothes")
-    public void addNewClothes(@RequestBody Clothes Clothes) {
-    	ClothesService.addNewClothes(Clothes);
+    public JSONObject addNewClothes(@RequestBody Clothes Clothes) {
+    	return ClothesService.addNewClothes(Clothes);
 	}
 
     @DeleteMapping(path= "/deleteClothes/{ClothesId}")

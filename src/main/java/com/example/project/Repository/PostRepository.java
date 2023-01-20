@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.project.Model.Post;
+import com.example.project.Model.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer> {
     @Query("SELECT p FROM Post p WHERE p.postBy=?1")
-    List<Post> findUserPost(int userId);
+    List<Post> findUserPost(User userId);
+    
+    @Query("SELECT p FROM Post p ORDER BY p.createdDatetime desc")
+    List<Post> findAllPosts();
 }
