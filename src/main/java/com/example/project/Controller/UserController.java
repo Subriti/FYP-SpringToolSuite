@@ -68,6 +68,17 @@ public class UserController {
 		return userService.updateUser(userId, user);
 	}
 	
+	@PostMapping(path= "/getFCMToken")
+    public JSONObject getFCMToken(@RequestBody JSONObject userName) {
+        return userService.getFCMToken(userName);
+    }
+	
+	@PutMapping(path = "/updateFCMToken/{userId}")
+    public JSONObject updateFCMToken(@PathVariable int userId, @RequestBody JSONObject FCMtoken) {
+        System.out.println(FCMtoken);
+        return userService.updateFCMtoken(userId, FCMtoken);
+    }
+	
 	@PutMapping(path = "/resetPasswordChange/{userId}")
 	public JSONObject resetPassword(@PathVariable int userId, @RequestParam(required = false) String user_name, @RequestParam(required = true) String old_password, @RequestParam(required = true) String new_password) {
 		return userService.changePassword(userId, old_password, new_password);

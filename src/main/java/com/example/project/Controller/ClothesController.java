@@ -44,7 +44,7 @@ public class ClothesController {
     }
 
     @PutMapping(path = "/updateClothes/{ClothesId}")
-    public void updateClothes(@PathVariable("ClothesId") int ClothesId, @RequestBody Clothes newCloth) {
-    	ClothesService.updateClothes(ClothesId,newCloth);
+    public JSONObject updateClothes(@PathVariable("ClothesId") int ClothesId, @RequestBody Clothes newCloth) {
+    	return ClothesService.updateClothes(ClothesId,newCloth);
     }
 }

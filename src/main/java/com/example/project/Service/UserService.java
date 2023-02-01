@@ -136,6 +136,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public JSONObject updateUser(int userId, User Newuser) {
+        String token = "token";
         JSONObject jsonObject = new JSONObject();
         
         User user = userRepository.findById(userId)
@@ -152,6 +153,9 @@ public class UserService implements UserDetailsService {
                 return jsonObject;
             }
             user.setUserName(Newuser.getUserName());
+
+            UserDetails userDetails = loadUserByUsername(Newuser.getUserName());
+            token = jwtUtility.generateToken(userDetails);
         }
 
         if (Newuser.getEmail() != null && Newuser.getEmail().length() > 0
@@ -197,6 +201,7 @@ public class UserService implements UserDetailsService {
         jsonObject.put("location", user.getLocation());
         jsonObject.put("phone_number", user.getPhoneNumber());
         jsonObject.put("profile_picture", user.getProfilePicture());
+        jsonObject.put("token", token);
         return jsonObject;
     }
 
@@ -353,6 +358,45 @@ public class UserService implements UserDetailsService {
         String password = user.getPassword();
         return new org.springframework.security.core.userdetails.User(name, password, new ArrayList<>());
     }
+    
+    @Transactional
+    public JSONObject updateFCMtoken(int userId, JSONObject FCMtoken) {
+        JSONObject jsonObject = new JSONObject();
+        
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
+        
+        JSONObject tokenString= new JSONObject(FCMtoken);
+        String token= tokenString.getAsString("fcm_token");
 
-   
+        if (token != null && token.length() > 0 && !Objects.equals(user.getFCMtoken(), token)) {
+            user.setFCMtoken(token);
+        }
+        jsonObject.clear();
+        jsonObject.put("Message", "Successfully Updated the fcm Token");
+        jsonObject.put("user_id", user.getUserId());
+        jsonObject.put("user_name", user.getUserName());
+        jsonObject.put("email", user.getEmail());
+        jsonObject.put("birth_date", user.getBirth_date());
+        jsonObject.put("location", user.getLocation());
+        jsonObject.put("phone_number", user.getPhoneNumber());
+        jsonObject.put("profile_picture", user.getProfilePicture());
+        jsonObject.put("fcm_token", token);
+        return jsonObject;
+    }
+
+    public JSONObject getFCMToken(JSONObject name) {
+        JSONObject jsonObject = new JSONObject();
+       
+        JSONObject tokenString= new JSONObject(name);
+        String userName= tokenString.getAsString("user_name");
+        
+        User user = userRepository.findByusername(userName);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with userName: " + userName);
+        }
+        jsonObject.put("fcm_token", user.getFCMtoken());
+        return jsonObject;
+    }
 }

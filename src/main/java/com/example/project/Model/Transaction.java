@@ -8,32 +8,43 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-@JsonPropertyOrder({ "reciever_user_id, post_id, rating, transaction_date" })
+@JsonPropertyOrder({ "transaction_id, reciever_user_id, post_id, rating, transaction_date" })
 
-@IdClass(TransactionPK.class)
+//@IdClass(TransactionPK.class)
 
 @Entity
 @Table(name = "Transaction")
 public class Transaction implements Serializable{
 
 	@Id	
+	@SequenceGenerator(
+            name = "transaction_sequence",
+            sequenceName = "transaction_sequence",  
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "transaction_sequence"
+    )
+    
+    @Column(name = "transaction_id")
+    private int transactionId;
+	
 	@OneToOne
 	@JoinColumn(name = "reciever_user_id", referencedColumnName = "user_id")
 	private User recieverUserId;
-	
-	@Id    
+	  
     @OneToOne
     @JoinColumn(name = "post_id", referencedColumnName = "post_id")
     private Post postId;

@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @JsonPropertyOrder({
-        "user_id, user_name, email, password, phone_number, birth_date, location, signup_date, profile_picture" })
+        "user_id, user_name, email, password, phone_number, birth_date, location, signup_date, profile_picture, fcm_token" })
 
 @Entity
 @Table(name = "Users")
@@ -58,13 +58,16 @@ public class User implements Serializable {
 
     @Column(name = "profile_picture")
     private String profilePicture;
+    
+    @Column(name = "fcm_token")
+    private String fcmToken;
 
     public User() {
         super();
     }
 
     public User(int userId, String userName, String email, String password, String phoneNumber, String location,
-            Date birth_date, Date signupDate, String profilePicture) {
+            Date birth_date, Date signupDate, String profilePicture, String fcmToken) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -75,10 +78,11 @@ public class User implements Serializable {
         this.birth_date = birth_date;
         this.signupDate = signupDate;
         this.profilePicture = profilePicture;
+        this.fcmToken= fcmToken;
     }
 
     public User(String userName, String email, String password, String phoneNumber, String location,
-            Date birth_date, Date signupDate, String profilePicture) {
+            Date birth_date, Date signupDate, String profilePicture, String fcmToken) {
         super();
         this.userName = userName;
         this.email = email;
@@ -87,7 +91,8 @@ public class User implements Serializable {
         this.location = location;
         this.birth_date = birth_date;
         this.signupDate = signupDate;
-        this.profilePicture = profilePicture;
+        this.profilePicture = profilePicture;    
+        this.fcmToken= fcmToken;
     }
 
     @JsonGetter("user_id")
@@ -178,5 +183,14 @@ public class User implements Serializable {
     @JsonSetter("profile_picture")
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+    @JsonGetter("fcm_token")
+    public String getFCMtoken() {
+        return fcmToken;
+    }
+
+    @JsonSetter("fcm_token")
+    public void setFCMtoken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

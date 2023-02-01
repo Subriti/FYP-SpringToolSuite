@@ -56,7 +56,7 @@ public class PostController {
     }
 
     @PutMapping(path = "/updatePost/{postId}")
-    public void updatePost(@PathVariable int postId,@RequestBody Post post) {
-    	postService.updatePost(postId,post);
+    public JSONObject updatePost(@PathVariable int postId,@RequestBody Post post) {
+    	return postService.updatePost(postId,post);
     }
 }

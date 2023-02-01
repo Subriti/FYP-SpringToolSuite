@@ -60,7 +60,7 @@ public class ClothesService {
     }
 
     @Transactional
-    public String updateClothes(int clothesId, Clothes Newclothes) {
+    public JSONObject updateClothes(int clothesId, Clothes Newclothes) {
         Clothes clothes = clothesRepository.findById(clothesId)
                 .orElseThrow(() -> new IllegalStateException("Clothes with ID " + clothesId + " does not exist"));
         
@@ -84,7 +84,9 @@ public class ClothesService {
             clothes.setClothSeason(Newclothes.getClothSeason());
         }
      
-        return "Successfully updated records";
+        JSONObject jsonObject= new JSONObject();
+        jsonObject.put("Success message", "Clothes Successfully Updated !!");
+        return jsonObject;
     }
 
 }

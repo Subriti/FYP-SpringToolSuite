@@ -7,21 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.project.Model.InterestedUsers;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
+import com.example.project.Repository.InterestedUsersRepository;
 import com.example.project.Repository.PostRepository;
 
+import kotlin.reflect.jvm.internal.ReflectProperties.Val;
 import net.minidev.json.JSONObject;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
-
+    private final InterestedUsersRepository interestedUsersRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, InterestedUsersRepository interestedUsersRepository) {
         this.postRepository = postRepository;
+        this.interestedUsersRepository = interestedUsersRepository;
     }
 
     public List<Post> getPosts() {
@@ -49,11 +53,25 @@ public class PostService {
         if (!exists) {
             throw new IllegalStateException("Post with ID " + postId + "does not exist");
         }
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalStateException("Post with ID " + postId + " does not exist"));
+        
+        List<InterestedUsers> user = interestedUsersRepository.findUserByPost(post); 
+        for (int i = 0; i < user.size(); i++) {
+            InterestedUsers users = user.get(i);
+            // do something with the user object
+            interestedUsersRepository.deleteById(users.getInterestedId());
+        }
+        /*
+         * if (user!=null) {
+         * interestedUsersRepository.DeletePostLikes(post);
+         * }
+         */       
         postRepository.deleteById(postId);
     }
 
     @Transactional
-    public String updatePost(int postId, Post Newpost) {
+    public JSONObject updatePost(int postId, Post Newpost) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalStateException("Post with ID " + postId + " does not exist"));
 
@@ -75,7 +93,9 @@ public class PostService {
             post.setLocation(Newpost.getLocation());
         }
         
-        return "Successfully updated records";
+        JSONObject jsonObject= new JSONObject();
+        jsonObject.put("Success message", "Post Successfully Updated !!");
+        return jsonObject;
     }
 
 }
