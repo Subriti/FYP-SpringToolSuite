@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-@JsonPropertyOrder({ "message_id, message_body, timestamp, sender_user_id, reciever_user_id" })
+@JsonPropertyOrder({ "message_id, message_body, timestamp, sender_user_id, reciever_user_id, chat_room_id" })
 
 @Entity
 @Table(name = "Message")
@@ -44,7 +44,7 @@ public class Message implements Serializable {
 	@Column(name = "message_body")
     private String messageBody;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "timestamp")
     private Date timestamp;
@@ -56,26 +56,31 @@ public class Message implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "reciever_user_id", referencedColumnName = "user_id")
 	private User recieverUserId;
+	
+	@Column(name = "chat_room_id")
+    private String chatRoomId; //Sarthak+Subriti jasto
 
 	public Message() {
 		super();
 	}
 
-	public Message(int messageId, String messageBody, Date timestamp, User senderUserId, User recieverUserId) {
+	public Message(int messageId, String messageBody, Date timestamp, User senderUserId, User recieverUserId, String chatRoomId) {
         super();
         this.messageId = messageId;
         this.messageBody = messageBody;
         this.timestamp = timestamp;
         this.senderUserId = senderUserId;
         this.recieverUserId = recieverUserId;
+        this.chatRoomId=chatRoomId;
     }
 
-    public Message(String messageBody, Date timestamp, User senderUserId, User recieverUserId) {
+    public Message(String messageBody, Date timestamp, User senderUserId, User recieverUserId, String chatRoomId) {
         super();
         this.messageBody = messageBody;
         this.timestamp = timestamp;
         this.senderUserId = senderUserId;
         this.recieverUserId = recieverUserId;
+        this.chatRoomId=chatRoomId;
     }
 
     @JsonGetter("message_id")
@@ -125,5 +130,15 @@ public class Message implements Serializable {
     @JsonSetter("sender_user_id")
     public void setSenderUserId(User senderUserId) {
         this.senderUserId = senderUserId;
+    }
+    
+    @JsonGetter("chat_room_id")
+    public String getChatRoomId() {
+        return chatRoomId;
+    }
+    
+    @JsonSetter("chat_room_id")
+    public void getChatRoomId(String chatRoomId) {
+        this.chatRoomId = chatRoomId;
     }
 }

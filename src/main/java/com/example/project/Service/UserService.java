@@ -64,6 +64,12 @@ public class UserService implements UserDetailsService {
        return user;
     }
     
+    public User findUserByID(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
+        return user;
+    }
+   
     public User findUserProfile(String username) {
         User user= userRepository.findByusername(username);
         if (user==null) {

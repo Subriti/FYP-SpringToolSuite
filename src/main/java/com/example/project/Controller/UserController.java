@@ -34,6 +34,12 @@ public class UserController {
 	public List<User> getUsers() {
 		return userService.getUsers();
 	}
+	
+	// Single item
+    @GetMapping(path= "/findUserByID/{userId}")
+    public User findUserByID(@PathVariable int userId) {
+        return userService.findUserByID(userId);
+    }
 
 	// Single item
 	@GetMapping(path= "/findUser/{email}")

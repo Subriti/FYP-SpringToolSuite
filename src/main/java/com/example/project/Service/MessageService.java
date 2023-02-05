@@ -3,11 +3,15 @@ package com.example.project.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project.Model.Message;
+import com.example.project.Model.User;
 import com.example.project.Repository.MessageRepository;
+
+import net.minidev.json.JSONObject;
 
 @Service
 public class MessageService {
@@ -23,8 +27,23 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
-    public List<Message> getUserMessages(int userId) {
+    public List<Message> getUserMessages(User userId) {
         return messageRepository.findUserMessages(userId);
+    }
+    
+    public List<Message> getUserChatRoomMessages(String chatRoomId) {
+        return messageRepository.findUserChatRoomMessages(chatRoomId);
+    }
+    
+    public List<Message> getUserChatRoomMessages(JSONObject chatRoomId) {
+        JSONObject tokenString= new JSONObject(chatRoomId);
+        String chatRoom= tokenString.getAsString("chat_room_id");
+        
+        return messageRepository.findUserChatRoomMessages(chatRoom);
+    }
+    
+    public List<String> getUserChatRooms(User userId) {
+        return messageRepository.findUserChatRooms(userId);
     }
     
     public Message findMessage(int messageId) {
@@ -32,9 +51,8 @@ public class MessageService {
                 .orElseThrow(() -> new IllegalStateException("Message with ID " + messageId + " does not exist"));
     }
 
-    public String addNewMessage(Message message) {
-       messageRepository.save(message);
-       return "Message Successfully Sent !!";
+    public Message addNewMessage(Message message) {      
+       return messageRepository.save(message);
     }
 
     public void deleteMessage(int messageId) {

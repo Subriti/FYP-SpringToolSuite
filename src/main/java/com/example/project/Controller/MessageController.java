@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.project.Model.Message;
+import com.example.project.Model.User;
 import com.example.project.Service.MessageService;
+
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping(path = "api/message")
@@ -31,10 +34,26 @@ public class MessageController {
         return messageService.getMessages();
 	}
 	
-	@GetMapping("/showUserMessages")
-    public List<Message> getUserMessage(@PathVariable int userId) {
+	@GetMapping("/showUserChatRooms/{userId}")
+    public List<String> getUserChatRooms(@PathVariable User userId) {
+       return messageService.getUserChatRooms(userId);
+   }
+	
+	@GetMapping("/showUserMessages/{userId}")
+    public List<Message> getUserMessage(@PathVariable User userId) {
        return messageService.getUserMessages(userId);
    }
+	
+	@GetMapping("/showUserChatRoomMessages/{chatRoomId}")
+    public List<Message> getUserChatRoomMessage(@PathVariable String chatRoomId) {
+       return messageService.getUserChatRoomMessages(chatRoomId);
+   }
+	
+	@PostMapping(path= "/showUserChatRoomMessages")
+    public List<Message> getUserChatRoomMessage(@RequestBody JSONObject chatRoomId) {
+        return messageService.getUserChatRoomMessages(chatRoomId);
+    }
+
 	
 	// Single item
     @GetMapping(path= "/findMessage/{messageId}")
@@ -43,8 +62,8 @@ public class MessageController {
     }
 
     @PostMapping("/addMessage")
-    public void addNewMessage(@RequestBody Message message) {
-    	messageService.addNewMessage(message);
+    public Message addNewMessage(@RequestBody Message message) {
+    	return messageService.addNewMessage(message);
 	}
 
     @DeleteMapping(path= "/deleteMessage/{messageId}")
@@ -53,7 +72,7 @@ public class MessageController {
     }
 
     @PutMapping(path = "/updateMessage/{messageId}")
-    public void updateMessage(@PathVariable int messageId,@RequestBody Message message) {
-    	messageService.updateMessage(messageId,message);
+    public String updateMessage(@PathVariable int messageId,@RequestBody Message message) {
+    	return messageService.updateMessage(messageId,message);
     }
 }
