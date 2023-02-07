@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.project.Model.Message;
@@ -34,10 +35,24 @@ public class MessageController {
         return messageService.getMessages();
 	}
 	
+    /*
+     * @GetMapping("/showUserChatRooms/{userId}")
+     * public List<String> getUserChatRooms(@PathVariable User userId) {
+     * return messageService.getUserChatRooms(userId);
+     * }
+     * 
+     * @PostMapping("/showUserChatRoom/{userId}")
+     * public List<String> getUserChatRooms(@PathVariable User userId, @RequestBody
+     * JSONObject userName) {
+     * return messageService.getUserChatRooms(userName, userId);
+     * }
+     */
+	
+	///this works
 	@GetMapping("/showUserChatRooms/{userId}")
-    public List<String> getUserChatRooms(@PathVariable User userId) {
-       return messageService.getUserChatRooms(userId);
-   }
+	public List<String> getUserChatRooms(@PathVariable int userId, @RequestParam String userName) {
+	   return messageService.getUserChatRooms(userName, userId);
+	}
 	
 	@GetMapping("/showUserMessages/{userId}")
     public List<Message> getUserMessage(@PathVariable User userId) {
@@ -54,7 +69,6 @@ public class MessageController {
         return messageService.getUserChatRoomMessages(chatRoomId);
     }
 
-	
 	// Single item
     @GetMapping(path= "/findMessage/{messageId}")
     public Message findMessage(@PathVariable int messageId) {
