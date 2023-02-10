@@ -83,10 +83,25 @@ public class MessageService {
         System.out.println(userId);
         System.out.println(username);
         
-        String queryString="WITH first_query AS (SELECT DISTINCT chat_room_id, reciever_user_id FROM message WHERE chat_room_id LIKE '%"+username+"%' AND sender_user_id in ("+userId+")), \r\n"
-                + "second_query AS (SELECT DISTINCT chat_room_id, sender_user_id FROM message WHERE chat_room_id LIKE '%"+username+"%' AND sender_user_id not in ("+userId+"))\r\n"
-                + "SELECT * FROM first_query UNION SELECT * FROM second_query WHERE NOT EXISTS (SELECT 1 FROM first_query);";
-      
+        /*
+         * String
+         * queryString="WITH first_query AS (SELECT DISTINCT chat_room_id, reciever_user_id FROM message WHERE chat_room_id LIKE '%"
+         * +username+"%' AND sender_user_id in ("+userId+")), \r\n"
+         * +
+         * "second_query AS (SELECT DISTINCT chat_room_id, sender_user_id FROM message WHERE chat_room_id LIKE '%"
+         * +username+"%' AND sender_user_id not in ("+userId+"))\r\n"
+         * +
+         * "SELECT * FROM first_query UNION SELECT * FROM second_query WHERE NOT EXISTS (SELECT 1 FROM first_query);"
+         * ;
+         */
+        String queryString="WITH chat_rooms AS (SELECT chat_room_id, sender_user_id, reciever_user_id FROM message \r\n"
+                + "                    UNION SELECT chat_room_id, reciever_user_id AS sender_user_id, sender_user_id AS reciever_user_id FROM message)\r\n"
+                + "SELECT DISTINCT chat_room_id, \r\n"
+                + "  CASE \r\n"
+                + "    WHEN sender_user_id = "+userId+" THEN reciever_user_id\r\n"
+                + "    ELSE sender_user_id\r\n"
+                + "  END AS reciever_user_id\r\n"
+                + "FROM chat_rooms WHERE sender_user_id = "+userId+"";
         return getAll(queryString);
     }
 
@@ -124,6 +139,39 @@ public class MessageService {
             }
 
         });
+    }
+    
+    public JSONObject getUserChatRoomId(String senderUsername, String recieverUsername) {
+        senderUsername= "'%"+senderUsername+"%'";
+        recieverUsername= "'%"+recieverUsername+"%'";
+        
+        String queryString= "SELECT DISTINCT chat_room_id FROM message WHERE chat_room_id LIKE "+senderUsername+" and chat_room_id LIKE "+recieverUsername;
+        System.out.println(queryString);
+        
+        JSONObject chatRoomId= new JSONObject();
+        
+        template.query(queryString, new ResultSetExtractor<String>() {
+            @Override
+            public String extractData(ResultSet rs) throws SQLException, DataAccessException {
+                String idString= "";
+                while (rs.next()) {
+                    idString= rs.getString(1);
+                    System.out.println(idString);
+                    chatRoomId.put("chat_room_id", idString);
+                }
+                if (chatRoomId.isEmpty()) {
+                    chatRoomId.put("chat_room_id", idString);
+                }
+                return idString;
+            }
+        });
+        return chatRoomId;
+
+        /*
+         * System.out.println(messageRepository.getUserChatRoomId(senderUsername,
+         * recieverUsername));
+         * return messageRepository.getUserChatRoomId(senderUsername, recieverUsername);
+         */
     }
 
     

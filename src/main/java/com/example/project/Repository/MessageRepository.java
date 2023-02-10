@@ -20,6 +20,9 @@ public interface MessageRepository extends JpaRepository<Message,Integer> {
     @Query("SELECT m FROM Message m WHERE m.chatRoomId=?1 ORDER by m.timestamp")
     List<Message> findUserChatRoomMessages(String chatRoomId);
 
+    
+    @Query(value = "SELECT DISTINCT chat_room_id FROM message WHERE chat_room_id LIKE ?1 and chat_room_id LIKE ?2",nativeQuery = true)
+    String getUserChatRoomId(String senderUserName, String recieverUserName);
 
     /*
      * @Query(value =

@@ -54,6 +54,13 @@ public class MessageController {
 	   return messageService.getUserChatRooms(userName, userId);
 	}
 	
+	
+	///this works
+    @GetMapping("/getUserChatRoomId/")
+    public JSONObject getUserChatRoomId(@RequestParam String senderName, @RequestParam String recieverName) {
+       return messageService.getUserChatRoomId(senderName, recieverName);
+    }
+	
 	@GetMapping("/showUserMessages/{userId}")
     public List<Message> getUserMessage(@PathVariable User userId) {
        return messageService.getUserMessages(userId);
