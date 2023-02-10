@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -78,15 +79,17 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
                 User user = new User();
                 user.setUserId(Integer.parseInt(userId));
 
-
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-                Date date = null;
+                
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date date= null;
                 try {
-                    date = format.parse(timestamp);
+                    date = inputFormat.parse(timestamp);
                 } catch (java.text.ParseException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+                System.out.println(date);
 
                 String chatRoom= json.getAsString("chat_room_id");
 
@@ -97,8 +100,17 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
                 JSONObject jsonBody= new JSONObject();
                 jsonBody.put("message_id", creationResponse.getMessageId());
                 jsonBody.put("message_body", creationResponse.getMessageBody());
-                jsonBody.put("timestamp", creationResponse.getTimestamp());
+                
+       
+                System.out.println(creationResponse.getTimestamp());
+                String outputString="";
+                SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                TimeZone.getTimeZone("UTC");
+                outputDateFormat.setTimeZone(TimeZone.getDefault());
+                outputString = outputDateFormat.format(creationResponse.getTimestamp());
+                System.out.println(outputString);
 
+                jsonBody.put("timestamp", outputString);
 
                 JSONObject recievers= new JSONObject();
                 recievers.put("user_id",creationResponse.getRecieverUserId().getUserId());
