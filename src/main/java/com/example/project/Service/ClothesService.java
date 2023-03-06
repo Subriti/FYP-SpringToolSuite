@@ -13,9 +13,7 @@ import net.minidev.json.JSONObject;
 
 @Service
 public class ClothesService {
-
     private final ClothesRepository clothesRepository;
-
 
     @Autowired
     public ClothesService(ClothesRepository clothesRepository) {

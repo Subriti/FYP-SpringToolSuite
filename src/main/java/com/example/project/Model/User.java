@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @JsonPropertyOrder({
-        "user_id, user_name, email, password, phone_number, birth_date, location, signup_date, profile_picture, fcm_token" })
+        "user_id, user_name, email, password, phone_number, birth_date, location, signup_date, profile_picture, fcm_token, is_admin, hide_email, hide_phone" })
 
 @Entity
 @Table(name = "Users")
@@ -61,13 +61,22 @@ public class User implements Serializable {
     
     @Column(name = "fcm_token")
     private String fcmToken;
+    
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
+    
+    @Column(name = "hide_email")
+    private Boolean hideEmail;
+    
+    @Column(name = "hide_phone")
+    private Boolean hidePhone;
 
     public User() {
         super();
     }
 
     public User(int userId, String userName, String email, String password, String phoneNumber, String location,
-            Date birth_date, Date signupDate, String profilePicture, String fcmToken) {
+            Date birth_date, Date signupDate, String profilePicture, String fcmToken, Boolean isAdmin, Boolean hideEmail, Boolean hidePhone) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -79,10 +88,27 @@ public class User implements Serializable {
         this.signupDate = signupDate;
         this.profilePicture = profilePicture;
         this.fcmToken= fcmToken;
+        this.isAdmin= isAdmin;
+        this.hideEmail= hideEmail;
+        this.hidePhone= hidePhone;
+    }
+
+    public User(String userName, String email, String password, String phoneNumber, String location, Date birth_date,
+            Date signupDate, String profilePicture, String fcmToken) {
+        super();
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.location = location;
+        this.birth_date = birth_date;
+        this.signupDate = signupDate;
+        this.profilePicture = profilePicture;
+        this.fcmToken = fcmToken;
     }
 
     public User(String userName, String email, String password, String phoneNumber, String location,
-            Date birth_date, Date signupDate, String profilePicture, String fcmToken) {
+            Date birth_date, Date signupDate, String profilePicture, String fcmToken, Boolean isAdmin, Boolean hideEmail, Boolean hidePhone) {
         super();
         this.userName = userName;
         this.email = email;
@@ -93,6 +119,9 @@ public class User implements Serializable {
         this.signupDate = signupDate;
         this.profilePicture = profilePicture;    
         this.fcmToken= fcmToken;
+        this.isAdmin= isAdmin;
+        this.hideEmail= hideEmail;
+        this.hidePhone= hidePhone;
     }
 
     @JsonGetter("user_id")
@@ -184,6 +213,7 @@ public class User implements Serializable {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+    
     @JsonGetter("fcm_token")
     public String getFCMtoken() {
         return fcmToken;
@@ -192,5 +222,35 @@ public class User implements Serializable {
     @JsonSetter("fcm_token")
     public void setFCMtoken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+    
+    @JsonGetter("is_admin")
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    @JsonSetter("is_admin")
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+    
+    @JsonGetter("hide_email")
+    public Boolean getHideEmail() {
+        return hideEmail;
+    }
+
+    @JsonSetter("hide_email")
+    public void setHideEmail(Boolean hideEmail) {
+        this.hideEmail = hideEmail;
+    }
+    
+    @JsonGetter("hide_phone")
+    public Boolean getHidePhone() {
+        return hidePhone;
+    }
+
+    @JsonSetter("hide_phone")
+    public void setHidePhone(Boolean hidePhone) {
+        this.hidePhone = hidePhone;
     }
 }

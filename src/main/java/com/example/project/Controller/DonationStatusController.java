@@ -41,10 +41,13 @@ public class DonationStatusController {
     	donationStatusService.deleteDonationStatus(donationStatusId);
     }
 
-    @PutMapping(path = "/updateDonationStatus/{donationStatusId}")
-    public void updateDonationStatus(@PathVariable("donationStatusId") int donationStatusId, String donationStatus) {
-    	donationStatusService.updateDonationStatus(donationStatusId,donationStatus);
-    }
+    /*
+     * @PutMapping(path = "/updateDonationStatus/{donationStatusId}")
+     * public void updateDonationStatus(@PathVariable("donationStatusId") int
+     * donationStatusId, String donationStatus) {
+     * donationStatusService.updateDonationStatus(donationStatusId,donationStatus);
+     * }
+     */
     
     //if updating from URL write the same variable name specified above i.e., 1? donationStatus= 
 }

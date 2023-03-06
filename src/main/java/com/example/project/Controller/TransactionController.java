@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.project.Model.Rating;
 import com.example.project.Model.Transaction;
-import com.example.project.Model.TransactionPK;
 import com.example.project.Service.TransactionService;
+
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping(path = "api/transaction")
@@ -39,22 +41,27 @@ public class TransactionController {
 	
 	// Single item
     @GetMapping(path= "/findTransaction/{transactionId}")
-    public Transaction findTransaction(@PathVariable TransactionPK transactionId) {
+    public Transaction findTransaction(@PathVariable int transactionId) {
         return transactionService.findTransaction(transactionId);
+    }
+    
+    @GetMapping(path= "/getRating/{userId}")
+    public Rating findRating(@PathVariable int userId) {
+        return transactionService.findRatingAndCount(userId);
     }
 
     @PostMapping("/addTransaction")
-    public void addNewTransaction(@RequestBody Transaction transaction) {
-    	transactionService.addNewTransaction(transaction);
+    public JSONObject addNewTransaction(@RequestBody Transaction transaction) {
+    	return transactionService.addNewTransaction(transaction);
 	}
 
     @DeleteMapping(path= "/deleteTransaction/{transactionId}")
-    public void deleteTransaction(@PathVariable("transactionId") TransactionPK transactionId) {
+    public void deleteTransaction(@PathVariable("transactionId") int transactionId) {
     	transactionService.deleteTransaction(transactionId);
     }
 
-    @PutMapping(path = "/updateTransaction/{transactionId}")
-    public void updateTransaction(@PathVariable TransactionPK transactionId,@RequestBody Transaction transaction) {
-    	transactionService.updateTransaction(transactionId,transaction);
+    @PutMapping(path = "/updateTransaction")
+    public JSONObject updateTransaction(@RequestBody Transaction transaction) {
+    	return transactionService.updateTransaction(transaction);
     }
 }

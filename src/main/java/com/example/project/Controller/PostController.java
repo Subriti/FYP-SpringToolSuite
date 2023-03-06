@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.project.Model.DonationStatus;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
 import com.example.project.Service.PostService;
@@ -58,5 +59,10 @@ public class PostController {
     @PutMapping(path = "/updatePost/{postId}")
     public JSONObject updatePost(@PathVariable int postId,@RequestBody Post post) {
     	return postService.updatePost(postId,post);
+    }
+    
+    @PutMapping(path = "/updateDonationStatus/{postId}")
+    public JSONObject updateDonationStatus(@PathVariable int postId, @RequestBody DonationStatus donationStatus) {
+        return postService.updateDonationStatus(postId, donationStatus);
     }
 }

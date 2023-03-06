@@ -50,7 +50,7 @@ public class Transaction implements Serializable{
     private Post postId;
 
 	@Column(name = "rating")
-	private int rating;
+	private float rating;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -63,12 +63,23 @@ public class Transaction implements Serializable{
 	}
 
 	
-	public Transaction(User recieverUserId, Post postId, int rating, Date transactionDate) {
+	public Transaction(User recieverUserId, Post postId, float rating, Date transactionDate) {
         super();
         this.recieverUserId = recieverUserId;
         this.postId = postId;
         this.rating = rating;
         this.transactionDate = transactionDate;
+    }
+	
+	 
+	 @JsonGetter("transaction_id")
+    public int getTransactionId() {
+        return transactionId;
+    }
+
+	 @JsonSetter("transaction_id")
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
     }
 
 
@@ -93,12 +104,12 @@ public class Transaction implements Serializable{
 	}
 
     @JsonGetter("rating")
-	public int getRating() {
+	public float getRating() {
         return rating;
     }
 
 	@JsonSetter("rating")
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 

@@ -30,6 +30,12 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     
     @Query("SELECT u FROM User u WHERE u.userName=?1")
     User findByusername(String username);
+    
+    @Query("SELECT u FROM User u WHERE u.fcmToken=?1")
+    User findByFCMtoken(String fcmToken);
+    
+    @Query("SELECT u FROM User u WHERE u.userName=?1")
+    User findByName(String userName);
 }
     
 	/*

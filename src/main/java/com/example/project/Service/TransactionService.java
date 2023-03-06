@@ -1,15 +1,24 @@
 package com.example.project.Service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.project.Model.Rating;
 import com.example.project.Model.Transaction;
-import com.example.project.Model.TransactionPK;
 import com.example.project.Repository.TransactionRepository;
+
+import net.minidev.json.JSONObject;
 
 @Service
 public class TransactionService {
@@ -29,17 +38,70 @@ public class TransactionService {
         return TransactionRepository.findUserTransaction(userId);
     }
 
-    public Transaction findTransaction(TransactionPK transactionId) {
+    public Transaction findTransaction(int transactionId) {
         return TransactionRepository.findById(transactionId)
                 .orElseThrow(
                         () -> new IllegalStateException("Transaction with ID " + transactionId + " does not exist"));
     }
 
-    public void addNewTransaction(Transaction Transaction) {
-        TransactionRepository.save(Transaction);
+    private JdbcTemplate template;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.template = new JdbcTemplate(dataSource);
     }
 
-    public void deleteTransaction(TransactionPK TransactionId) {
+    public JdbcTemplate getTemplate() {
+        return template;
+    }
+
+    @Autowired
+    public void setTemplate(JdbcTemplate template) {
+        this.template = template;
+    }
+    
+    public Rating findRatingAndCount(int userId) {
+        
+        String queryString= "select count(rating), avg(rating) from transaction t join post p on p.post_id= t.post_id where p.post_by="+userId;
+        return template.query(queryString, new ResultSetExtractor<Rating>() {
+
+            @Override
+            public Rating extractData(ResultSet rs) throws SQLException, DataAccessException {
+                
+                Rating s = new Rating();
+                
+                while (rs.next()) {
+                    s = new Rating();
+           
+                    s.setClothDonated(rs.getInt(1));
+                    System.out.println("\nNumber of Cloth Donated is " + s.getClothDonated());
+
+                    s.setRating(rs.getFloat(2));
+                    System.out.println("Rating is " + s.getRating());               
+                }
+                return s;
+            }
+        });
+        
+       /* Rating transaction= TransactionRepository.getRatingAndCount(userId);
+        System.out.println(transaction.getClothDonated());
+        System.out.println(transaction.getRating());
+        
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("cloth_donated", transaction.getClothDonated());
+        jsonObject.put("rating", transaction.getRating());
+        return jsonObject;*/
+    }
+    
+
+    public JSONObject addNewTransaction(Transaction Transaction) {
+        TransactionRepository.save(Transaction);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("Message", "Successfully Added the Transaction");
+        return jsonObject;
+    }
+
+    public void deleteTransaction(int TransactionId) {
         boolean exists = TransactionRepository.existsById(TransactionId);
         if (!exists) {
             throw new IllegalStateException("status with id " + TransactionId + " does not exist");
@@ -48,10 +110,8 @@ public class TransactionService {
     }
 
     @Transactional
-    public String updateTransaction(TransactionPK transactionId, Transaction Newtransaction) {
-        Transaction transaction = TransactionRepository.findById(transactionId)
-                .orElseThrow(
-                        () -> new IllegalStateException("Transaction with ID " + transactionId + " does not exist"));
+    public JSONObject updateTransaction(Transaction Newtransaction) {
+        Transaction transaction = TransactionRepository.findTransaction(Newtransaction.getPostId().getPostId());
 
         if (Newtransaction.getRating() != 0 && Newtransaction.getRating() > 0
                 && !Objects.equals(transaction.getRating(), Newtransaction.getRating())) {
@@ -64,7 +124,8 @@ public class TransactionService {
 
             transaction.setTransactionDate(Newtransaction.getTransactionDate());
         }
-        return "Successfully updated records";
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("Message", "Successfully updated records");
+        return jsonObject;
     }
 }

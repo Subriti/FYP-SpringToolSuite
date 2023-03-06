@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.project.Model.InterestedUsers;
-import com.example.project.Model.InterestedUsersPK;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
 

@@ -40,6 +40,23 @@ public class UserController {
     public User findUserByID(@PathVariable int userId) {
         return userService.findUserByID(userId);
     }
+    
+ // Single item
+    @GetMapping(path= "/findUserByName/{userName}")
+    public User findUserByName(@PathVariable String userName) {
+        return userService.findUserByName(userName);
+    }
+    
+    @PostMapping(path= "/findUserByName")
+    public User findUserByName(@RequestBody JSONObject userName) {
+        return userService.findUserByName(userName);
+    }
+    
+ // Single item
+    @GetMapping(path= "/findUserByToken/{fcmToken}")
+    public User findUserByToken(@PathVariable String fcmToken) {
+        return userService.findUserByToken(fcmToken);
+    }
 
 	// Single item
 	@GetMapping(path= "/findUser/{email}")

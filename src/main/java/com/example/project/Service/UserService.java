@@ -69,6 +69,28 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
         return user;
     }
+    
+    public User findUserByName(String userName) {
+        User user = userRepository.findByName(userName);
+        return user;
+    }
+    
+    public User findUserByName(JSONObject name) {
+        JSONObject tokenString= new JSONObject(name);
+        String userName= tokenString.getAsString("user_name");
+        
+        User user = userRepository.findByusername(userName);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with userName: " + userName);
+        }
+        return user;
+    }
+    
+    public User findUserByToken(String fcmToken) {
+        User user = userRepository.findByFCMtoken(fcmToken);
+        return user;
+    }
    
     public User findUserProfile(String username) {
         User user= userRepository.findByusername(username);
