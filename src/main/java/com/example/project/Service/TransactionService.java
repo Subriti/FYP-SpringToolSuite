@@ -37,6 +37,20 @@ public class TransactionService {
     public List<Transaction> findUserTransaction(int userId) {
         return TransactionRepository.findUserTransaction(userId);
     }
+    
+    
+    public List<Transaction> findRecievedTransaction(int userId) {
+        return TransactionRepository.findRecievedDonations(userId);
+    }
+    
+    public List<Transaction> findGivenTransaction(int userId) {
+        return TransactionRepository.findGivenDonations(userId);
+    }
+    
+    public List<Transaction> findOnGoingTransaction(int userId) {
+        return TransactionRepository.findOngoingTransactions(userId);
+    }
+    
 
     public Transaction findTransaction(int transactionId) {
         return TransactionRepository.findById(transactionId)
@@ -62,7 +76,7 @@ public class TransactionService {
     
     public Rating findRatingAndCount(int userId) {
         
-        String queryString= "select count(rating), avg(rating) from transaction t join post p on p.post_id= t.post_id where p.post_by="+userId;
+        String queryString= "select count(rating), avg(rating) from transaction t join post p on p.post_id= t.post_id where p.donation_status=3 and p.post_by="+userId;
         return template.query(queryString, new ResultSetExtractor<Rating>() {
 
             @Override

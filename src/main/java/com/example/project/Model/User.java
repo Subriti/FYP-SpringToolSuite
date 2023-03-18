@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -62,7 +64,7 @@ public class User implements Serializable {
     @Column(name = "fcm_token")
     private String fcmToken;
     
-    @Column(name = "is_admin")
+    @Column(name = "is_admin", columnDefinition = "boolean default false")
     private Boolean isAdmin;
     
     @Column(name = "hide_email")
@@ -93,19 +95,22 @@ public class User implements Serializable {
         this.hidePhone= hidePhone;
     }
 
-    public User(String userName, String email, String password, String phoneNumber, String location, Date birth_date,
-            Date signupDate, String profilePicture, String fcmToken) {
-        super();
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.location = location;
-        this.birth_date = birth_date;
-        this.signupDate = signupDate;
-        this.profilePicture = profilePicture;
-        this.fcmToken = fcmToken;
-    }
+    /*
+     * public User(String userName, String email, String password, String
+     * phoneNumber, String location, Date birth_date,
+     * Date signupDate, String profilePicture, String fcmToken) {
+     * super();
+     * this.userName = userName;
+     * this.email = email;
+     * this.password = password;
+     * this.phoneNumber = phoneNumber;
+     * this.location = location;
+     * this.birth_date = birth_date;
+     * this.signupDate = signupDate;
+     * this.profilePicture = profilePicture;
+     * this.fcmToken = fcmToken;
+     * }
+     */
 
     public User(String userName, String email, String password, String phoneNumber, String location,
             Date birth_date, Date signupDate, String profilePicture, String fcmToken, Boolean isAdmin, Boolean hideEmail, Boolean hidePhone) {

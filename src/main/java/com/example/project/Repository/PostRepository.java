@@ -11,7 +11,7 @@ import com.example.project.Model.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post,Integer> {
-    @Query("SELECT p FROM Post p WHERE p.postBy=?1")
+    @Query("SELECT p FROM Post p WHERE p.postBy=?1 order by p.createdDatetime desc")
     List<Post> findUserPost(User userId);
     
     @Query("SELECT p FROM Post p ORDER BY p.createdDatetime desc")

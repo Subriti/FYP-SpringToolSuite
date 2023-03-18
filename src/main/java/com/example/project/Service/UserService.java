@@ -147,6 +147,8 @@ public class UserService implements UserDetailsService {
             jsonObject.put("location", user.getLocation());
             jsonObject.put("phone_number", user.getPhoneNumber());
             jsonObject.put("profile_picture", user.getProfilePicture());
+            jsonObject.put("hide_email", user.getHideEmail());
+            jsonObject.put("hide_phone", user.getHidePhone());
             return jsonObject;
         }
         jsonObject.clear();
@@ -197,7 +199,13 @@ public class UserService implements UserDetailsService {
                 return jsonObject;
             }
         }
+        if (Newuser.getHideEmail() != null && !Objects.equals(user.getHideEmail(), Newuser.getHideEmail())) {
+            user.setHideEmail(Newuser.getHideEmail());
+        }
         
+        if (Newuser.getHidePhone() != null && !Objects.equals(user.getHidePhone(), Newuser.getHidePhone())) {
+            user.setHidePhone(Newuser.getHidePhone());
+        }
       
         if (Newuser.getBirth_date() != null && !Objects.equals(user.getBirth_date(), Newuser.getBirth_date())) {
             user.setBirth_date(Newuser.getBirth_date());
@@ -230,6 +238,9 @@ public class UserService implements UserDetailsService {
         jsonObject.put("phone_number", user.getPhoneNumber());
         jsonObject.put("profile_picture", user.getProfilePicture());
         jsonObject.put("token", token);
+        jsonObject.put("hide_email", user.getHideEmail());
+        jsonObject.put("hide_phone", user.getHidePhone());
+        
         return jsonObject;
     }
 
@@ -361,6 +372,9 @@ public class UserService implements UserDetailsService {
                 jsonObject.put("phone_number", user.getPhoneNumber());
                 jsonObject.put("profile_picture", user.getProfilePicture());
                 jsonObject.put("token", token);
+                jsonObject.put("is_admin", user.getIsAdmin());
+                jsonObject.put("hide_email", user.getHideEmail());
+                jsonObject.put("hide_phone", user.getHidePhone());
 
                 System.out.println(jsonObject);
                 return jsonObject;

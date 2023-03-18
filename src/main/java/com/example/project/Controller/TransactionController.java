@@ -34,9 +34,24 @@ public class TransactionController {
         return transactionService.getTransaction();
 	}
 	
-	@GetMapping("/showUserTransactions")
+	@GetMapping("/showUserTransactions/{userId}")
     public List<Transaction> findUserTransaction(@PathVariable int userId) {
        return transactionService.findUserTransaction(userId);
+   }
+	
+	@GetMapping("/showRecievedTransactions/{userId}")
+    public List<Transaction> findRecievedTransaction(@PathVariable int userId) {
+       return transactionService.findRecievedTransaction(userId);
+   }
+	
+	@GetMapping("/showGivenTransactions/{userId}")
+    public List<Transaction> findGivenTransaction(@PathVariable int userId) {
+       return transactionService.findGivenTransaction(userId);
+   }
+	
+	@GetMapping("/showOngoingTransactions/{userId}")
+    public List<Transaction> findOngoingTransaction(@PathVariable int userId) {
+       return transactionService.findOnGoingTransaction(userId);
    }
 	
 	// Single item
