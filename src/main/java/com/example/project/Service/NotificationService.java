@@ -30,6 +30,10 @@ public class NotificationService {
 	 public List<Notification> getUserNotifications(User userId) {
 	        return notificationRepository.findUserNotifications(userId);
 	    }
+	 
+	 public List<Notification> findPostNotifications(Post postId) {
+         return notificationRepository.findPostNotifications(postId);
+     }
 
 	public Notification addNotification(Notification notification) {
 	    return notificationRepository.save(notification);

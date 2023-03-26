@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.project.Model.Post;
 import com.example.project.Model.Report;
 import com.example.project.Service.ReportService;
 
@@ -43,8 +44,10 @@ public class ReportController {
         reportService.deleteReport(reportId);
     }
 
-    @PutMapping(path = "/updateReport/{reportId}")
-    public JSONObject updateReport(@PathVariable("reportId") int reportId) {
-        return reportService.updateReportStatus(reportId);
-    }
+    /*
+     * @PutMapping(path = "/updateReport/{postId}")
+     * public JSONObject updateReport(@PathVariable("postId") Post postId) {
+     * return reportService.updateReportStatus(postId);
+     * }
+     */
 }

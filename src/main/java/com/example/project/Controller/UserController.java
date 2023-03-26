@@ -112,8 +112,13 @@ public class UserController {
         return userService.changePassword(userId, body.get("old_password").toString(), body.get("new_password").toString());
 	}
 	
-	@PutMapping(path = "/forgotPassword/{userId}")
+	@PutMapping(path = "/forgotPasswords/{userId}")
 	public String forgotPassword(@PathVariable int userId) {
         return userService.forgotPassword(userId);
 	}
+	
+	@PutMapping(path = "/forgotPassword/{email}")
+    public JSONObject forgotPassword(@PathVariable String email) {
+        return userService.forgotPassword(email);
+    }
 }

@@ -1,11 +1,13 @@
 package com.example.project.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.project.Model.Post;
 import com.example.project.Model.Report;
 import com.example.project.Repository.ReportRepository;
 
@@ -23,6 +25,7 @@ public class ReportService {
 
     public List<Report> getReports() {
         return reportRepository.findAll();
+        //return reportRepository.getAll();
     }
 
     public JSONObject addReport(Report report) {
@@ -41,14 +44,31 @@ public class ReportService {
         reportRepository.deleteById(reportId);
     }
 
-    @Transactional
-    public JSONObject updateReportStatus(int reportId) {
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalStateException("report with id " + reportId + " does not exist"));
-        report.setIsPostDeleted(true);
-        
-        JSONObject jsonObject= new JSONObject();
-        jsonObject.put("Success message", "Report Status Successfully Updated !!");
-        return jsonObject;
-    }
+    /*
+     * @Transactional
+     * public JSONObject updateReportStatus(int reportId) {
+     * Report report = reportRepository.findById(reportId)
+     * .orElseThrow(() -> new IllegalStateException("report with id " + reportId +
+     * " does not exist"));
+     * report.setIsPostDeleted(true);
+     * 
+     * JSONObject jsonObject= new JSONObject();
+     * jsonObject.put("Success message", "Report Status Successfully Updated !!");
+     * return jsonObject;
+     * }
+     */
+    
+    /*
+     * @Transactional
+     * public JSONObject updateReportStatus(Post postId) {
+     * List<Report> reports = reportRepository.getReports(postId);
+     * for (Report report : reports) {
+     * report.setIsPostDeleted(true);
+     * }
+     * 
+     * JSONObject jsonObject= new JSONObject();
+     * jsonObject.put("Success message", "Report Status Successfully Updated !!");
+     * return jsonObject;
+     * }
+     */
 }

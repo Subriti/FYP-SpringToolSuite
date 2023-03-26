@@ -9,12 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project.Model.DonationStatus;
 import com.example.project.Model.InterestedUsers;
+import com.example.project.Model.Notification;
 import com.example.project.Model.Post;
+import com.example.project.Model.Report;
 import com.example.project.Model.User;
 import com.example.project.Repository.ClothesRepository;
 import com.example.project.Repository.DonationStatusRepository;
 import com.example.project.Repository.InterestedUsersRepository;
+import com.example.project.Repository.NotificationRepository;
 import com.example.project.Repository.PostRepository;
+import com.example.project.Repository.ReportRepository;
 
 import net.minidev.json.JSONObject;
 
@@ -25,14 +29,18 @@ public class PostService {
     private final InterestedUsersRepository interestedUsersRepository;
     private final ClothesRepository clothesRepository;
     private final DonationStatusRepository donationStatusRepository;
+    private final NotificationRepository notificationRepository;
+    private final ReportRepository reportRepository;
 
 
     @Autowired
-    public PostService(PostRepository postRepository, InterestedUsersRepository interestedUsersRepository, ClothesRepository clothesRepository, DonationStatusRepository donationStatusRepository) {
+    public PostService(PostRepository postRepository, InterestedUsersRepository interestedUsersRepository, ClothesRepository clothesRepository, DonationStatusRepository donationStatusRepository, NotificationRepository notificationRepository, ReportRepository reportRepository) {
         this.postRepository = postRepository;
         this.interestedUsersRepository = interestedUsersRepository;
         this.clothesRepository = clothesRepository;
         this.donationStatusRepository = donationStatusRepository;
+        this.notificationRepository= notificationRepository;
+        this.reportRepository= reportRepository;
     }
 
     public List<Post> getPosts() {
@@ -71,9 +79,26 @@ public class PostService {
             interestedUsersRepository.deleteById(users.getInterestedId());
         }
         
+
+        //on removal of the post, also remove its notifications
+        List<Notification> notifications = notificationRepository.findPostNotifications(post); 
+        for (int i = 0; i < notifications.size(); i++) {
+            Notification notification = notifications.get(i);
+            // do something with the notification object
+            notificationRepository.deleteById(notification.getNotificationId());
+        }
+        
+        //on removal of the post, also remove all its associated reports
+        List<Report> reports = reportRepository.getReports(post);
+        for (Report report : reports) {
+            reportRepository.deleteById(report.getReportId());
+        }
+        
         //on removal of the post, also remove its cloth details
         postRepository.deleteById(postId);
         clothesRepository.deleteById(post.getClothId().getClothId());
+        
+        
     }
 
     @Transactional

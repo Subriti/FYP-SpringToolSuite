@@ -57,28 +57,28 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByEmail(String email) {
-        User user= userRepository.findByEmail(email);
-        if (user==null) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
             throw new IllegalStateException("User with Email " + email + "does not exist");
         }
-       return user;
+        return user;
     }
-    
+
     public User findUserByID(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
         return user;
     }
-    
+
     public User findUserByName(String userName) {
         User user = userRepository.findByName(userName);
         return user;
     }
-    
+
     public User findUserByName(JSONObject name) {
-        JSONObject tokenString= new JSONObject(name);
-        String userName= tokenString.getAsString("user_name");
-        
+        JSONObject tokenString = new JSONObject(name);
+        String userName = tokenString.getAsString("user_name");
+
         User user = userRepository.findByusername(userName);
 
         if (user == null) {
@@ -86,22 +86,22 @@ public class UserService implements UserDetailsService {
         }
         return user;
     }
-    
+
     public User findUserByToken(String fcmToken) {
         User user = userRepository.findByFCMtoken(fcmToken);
         return user;
     }
-   
+
     public User findUserProfile(String username) {
-        User user= userRepository.findByusername(username);
-        if (user==null) {
+        User user = userRepository.findByusername(username);
+        if (user == null) {
             throw new IllegalStateException("User with username " + username + "does not exist");
         }
-       return user;
+        return user;
     }
 
     public JSONObject addNewUser(User user) {
-        JSONObject jsonObject= new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         Optional<User> userOptional = userRepository.findUserByUsername(user.getUserName());
         System.out.println(userOptional);
         if (userOptional.isPresent()) {
@@ -152,7 +152,8 @@ public class UserService implements UserDetailsService {
             return jsonObject;
         }
         jsonObject.clear();
-        jsonObject.put("Error message", "New password doesn't meet required complexity definitions. \\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter");
+        jsonObject.put("Error message",
+                "New password doesn't meet required complexity definitions. \\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter");
         return jsonObject;
     }
 
@@ -168,7 +169,7 @@ public class UserService implements UserDetailsService {
     public JSONObject updateUser(int userId, User Newuser) {
         String token = "token";
         JSONObject jsonObject = new JSONObject();
-        
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
 
@@ -195,18 +196,18 @@ public class UserService implements UserDetailsService {
                 user.setEmail(Newuser.getEmail());
             } else {
                 jsonObject.clear();
-                jsonObject.put("Error Message",  "Invalid Email");
+                jsonObject.put("Error Message", "Invalid Email");
                 return jsonObject;
             }
         }
         if (Newuser.getHideEmail() != null && !Objects.equals(user.getHideEmail(), Newuser.getHideEmail())) {
             user.setHideEmail(Newuser.getHideEmail());
         }
-        
+
         if (Newuser.getHidePhone() != null && !Objects.equals(user.getHidePhone(), Newuser.getHidePhone())) {
             user.setHidePhone(Newuser.getHidePhone());
         }
-      
+
         if (Newuser.getBirth_date() != null && !Objects.equals(user.getBirth_date(), Newuser.getBirth_date())) {
             user.setBirth_date(Newuser.getBirth_date());
         }
@@ -223,8 +224,9 @@ public class UserService implements UserDetailsService {
 
             user.setLocation(Newuser.getLocation());
         }
-        
-        if (Newuser.getProfilePicture() != null && Newuser.getProfilePicture().length() > 0 && !Objects.equals(user.getProfilePicture(), Newuser.getProfilePicture())) {
+
+        if (Newuser.getProfilePicture() != null && Newuser.getProfilePicture().length() > 0
+                && !Objects.equals(user.getProfilePicture(), Newuser.getProfilePicture())) {
 
             user.setProfilePicture(Newuser.getProfilePicture());
         }
@@ -240,7 +242,7 @@ public class UserService implements UserDetailsService {
         jsonObject.put("token", token);
         jsonObject.put("hide_email", user.getHideEmail());
         jsonObject.put("hide_phone", user.getHidePhone());
-        
+
         return jsonObject;
     }
 
@@ -255,7 +257,6 @@ public class UserService implements UserDetailsService {
         // storing last used passwords in a list
         List<String> list = userRepository.findPreviousPasswordsByID(userId);
         int i = 0;
-
 
         if (oldPassword != null && oldPassword.length() > 0) {
 
@@ -272,7 +273,6 @@ public class UserService implements UserDetailsService {
                                 String hashedPassword = passwordEncoder.encode(newPassword);
 
                                 user.setPassword(hashedPassword);
-
 
                                 // saving the password in history table
                                 ZoneId defaultZoneId = ZoneId.systemDefault();
@@ -296,22 +296,22 @@ public class UserService implements UserDetailsService {
                         return jsonObject;
                     }
                     jsonObject.clear();
-                    jsonObject.put("Error", "New password doesn't meet required complexity definitions.\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter");
+                    jsonObject.put("Error",
+                            "New password doesn't meet required complexity definitions.\nRequired: minimum of 8characters, 1 numerical, 1 special character, 1capital letter and 1small letter");
                     return jsonObject;
                 }
                 jsonObject.clear();
-                jsonObject.put("Error","New Password cannot be old password");
+                jsonObject.put("Error", "New Password cannot be old password");
                 return jsonObject;
             }
             jsonObject.clear();
-            jsonObject.put("Error","Incorrect Password");
+            jsonObject.put("Error", "Incorrect Password");
             return jsonObject;
         }
         jsonObject.clear();
-        jsonObject.put("Error","Password Reset Failed");
+        jsonObject.put("Error", "Password Reset Failed");
         return jsonObject;
     }
-
 
     @Transactional
     public String forgotPassword(int userId) {
@@ -327,6 +327,28 @@ public class UserService implements UserDetailsService {
         user.setPassword(hashedPassword);
 
         return "Successful !! Your new password is " + hashedPassword;
+    }
+
+    @Transactional
+    public JSONObject forgotPassword(String email) {
+        JSONObject jsonObject = new JSONObject();
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            jsonObject.put("Error Message", "User with email " + email + " does not exist");
+        } else {
+
+            String generatedPassword = PasswordGenerator.generateStrongPassword();
+            String newPassword = PasswordGenerator.shuffleString(generatedPassword);
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String hashedPassword = passwordEncoder.encode(newPassword);
+
+            user.setPassword(hashedPassword);
+            jsonObject.clear();
+            jsonObject.put("Success Message", newPassword);
+            jsonObject.put("phone_number", user.getPhoneNumber());
+        }
+        return jsonObject;
     }
 
     @Bean
@@ -345,14 +367,13 @@ public class UserService implements UserDetailsService {
             String passwordString = userRepository.findPasswordByEmail(email);
             System.out.println(passwordString);
 
-
             if (BCrypt.checkpw(password, passwordString)) {
 
                 User user = userRepository.findByEmail(email);
 
                 try {
                     authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), passwordString));
+                            .authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), passwordString));
                 } catch (BadCredentialsException e) {
                     jsonObject.put("error", "INVALID CREDENTIALS " + e);
                     return jsonObject;
@@ -360,7 +381,6 @@ public class UserService implements UserDetailsService {
 
                 UserDetails userDetails = loadUserByUsername(user.getUserName());
                 final String token = jwtUtility.generateToken(userDetails);
-
 
                 jsonObject.put("message", "Successful Login !! ");
 
@@ -386,7 +406,6 @@ public class UserService implements UserDetailsService {
         return jsonObject;
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
@@ -400,16 +419,16 @@ public class UserService implements UserDetailsService {
         String password = user.getPassword();
         return new org.springframework.security.core.userdetails.User(name, password, new ArrayList<>());
     }
-    
+
     @Transactional
     public JSONObject updateFCMtoken(int userId, JSONObject FCMtoken) {
         JSONObject jsonObject = new JSONObject();
-        
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " does not exist"));
-        
-        JSONObject tokenString= new JSONObject(FCMtoken);
-        String token= tokenString.getAsString("fcm_token");
+
+        JSONObject tokenString = new JSONObject(FCMtoken);
+        String token = tokenString.getAsString("fcm_token");
 
         if (token != null && token.length() > 0 && !Objects.equals(user.getFCMtoken(), token)) {
             user.setFCMtoken(token);
@@ -429,10 +448,10 @@ public class UserService implements UserDetailsService {
 
     public JSONObject getFCMToken(JSONObject name) {
         JSONObject jsonObject = new JSONObject();
-       
-        JSONObject tokenString= new JSONObject(name);
-        String userName= tokenString.getAsString("user_name");
-        
+
+        JSONObject tokenString = new JSONObject(name);
+        String userName = tokenString.getAsString("user_name");
+
         User user = userRepository.findByusername(userName);
 
         if (user == null) {

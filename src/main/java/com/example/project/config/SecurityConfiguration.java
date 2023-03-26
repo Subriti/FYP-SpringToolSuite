@@ -59,7 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests().antMatchers("/api/user/addUsers","/api/user/loginUser","/api/messageSocket/{clientId}","/api/messageSocket").permitAll().anyRequest().authenticated()
+		http.csrf().disable().authorizeRequests().antMatchers("/api/user/addUsers","/api/user/loginUser","/api/messageSocket/{clientId}","/api/messageSocket","/api/user/forgotPassword/{email}").permitAll().anyRequest().authenticated()
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Add a filter to validate the tokens with every request

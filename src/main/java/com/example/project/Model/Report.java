@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-@JsonPropertyOrder({ "report_id, reported_by, post_id, feedback, report_date, post_deleted" })
+@JsonPropertyOrder({ "report_id, reported_by, post_id, feedback, report_date" })
 
 
 @Entity
@@ -56,8 +56,10 @@ public class Report implements Serializable{
 	@Column(name = "report_date")
 	private Date reportDate;
 
-	@Column(name = "post_deleted")
-    private Boolean postDeleted;
+    /*
+     * @Column(name = "post_deleted")
+     * private Boolean postDeleted;
+     */
 
 	public Report() {
 		super();
@@ -72,18 +74,19 @@ public class Report implements Serializable{
         this.reportDate = reportDate;
     }
 	
-	
-	 
-	 public Report(User reportedBy, Post postId, String feedback, Date reportDate, Boolean postDeleted) {
-        super();
-        this.reportedBy = reportedBy;
-        this.postId = postId;
-        this.feedback = feedback;
-        this.reportDate = reportDate;
-        this.postDeleted = postDeleted;
-    }
-
-
+    /*
+     * 
+     * public Report(User reportedBy, Post postId, String feedback, Date reportDate,
+     * Boolean postDeleted) {
+     * super();
+     * this.reportedBy = reportedBy;
+     * this.postId = postId;
+     * this.feedback = feedback;
+     * this.reportDate = reportDate;
+     * this.postDeleted = postDeleted;
+     * }
+     * 
+     */
     @JsonGetter("report_id")
     public int getReportId() {
         return reportId;
@@ -135,14 +138,15 @@ public class Report implements Serializable{
 		this.reportDate = reportDate;
 	}
     
-    @JsonGetter("post_deleted")
-    public Boolean getIsPostDeleted() {
-        return postDeleted;
-    }
-
-    @JsonSetter("post_deleted")
-    public void setIsPostDeleted(Boolean postDeleted) {
-        this.postDeleted = postDeleted;
-    }
-
+    /*
+     * @JsonGetter("post_deleted")
+     * public Boolean getIsPostDeleted() {
+     * return postDeleted;
+     * }
+     * 
+     * @JsonSetter("post_deleted")
+     * public void setIsPostDeleted(Boolean postDeleted) {
+     * this.postDeleted = postDeleted;
+     * }
+     */
 }
