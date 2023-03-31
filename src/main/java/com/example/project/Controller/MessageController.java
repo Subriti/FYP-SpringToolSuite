@@ -71,6 +71,7 @@ public class MessageController {
        return messageService.getUserChatRoomMessages(chatRoomId);
    }
 	
+	//this works
 	@PostMapping(path= "/showUserChatRoomMessages")
     public List<Message> getUserChatRoomMessage(@RequestBody JSONObject chatRoomId) {
         return messageService.getUserChatRoomMessages(chatRoomId);

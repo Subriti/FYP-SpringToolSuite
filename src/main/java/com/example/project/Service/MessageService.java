@@ -141,6 +141,7 @@ public class MessageService {
         });
     }
     
+    //this works
     public JSONObject getUserChatRoomId(String senderUsername, String recieverUsername) {
         senderUsername= "'%"+senderUsername+"%'";
         recieverUsername= "'%"+recieverUsername+"%'";
