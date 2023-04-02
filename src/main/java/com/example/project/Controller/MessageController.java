@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.project.Model.Message;
-import com.example.project.Model.User;
 import com.example.project.Service.MessageService;
 
 import net.minidev.json.JSONObject;
@@ -29,58 +28,20 @@ public class MessageController {
 	public MessageController(MessageService messageService) {
         this.messageService= messageService;
     }
-
-	@GetMapping("/showMessages")
-	 public List<Message> getMessage() {
-        return messageService.getMessages();
-	}
 	
-    /*
-     * @GetMapping("/showUserChatRooms/{userId}")
-     * public List<String> getUserChatRooms(@PathVariable User userId) {
-     * return messageService.getUserChatRooms(userId);
-     * }
-     * 
-     * @PostMapping("/showUserChatRoom/{userId}")
-     * public List<String> getUserChatRooms(@PathVariable User userId, @RequestBody
-     * JSONObject userName) {
-     * return messageService.getUserChatRooms(userName, userId);
-     * }
-     */
-	
-	///this works
 	@GetMapping("/showUserChatRooms/{userId}")
 	public List<String> getUserChatRooms(@PathVariable int userId, @RequestParam String userName) {
 	   return messageService.getUserChatRooms(userName, userId);
 	}
 	
-	
-	///this works
     @GetMapping("/getUserChatRoomId/")
     public JSONObject getUserChatRoomId(@RequestParam String senderName, @RequestParam String recieverName) {
        return messageService.getUserChatRoomId(senderName, recieverName);
     }
 	
-	@GetMapping("/showUserMessages/{userId}")
-    public List<Message> getUserMessage(@PathVariable User userId) {
-       return messageService.getUserMessages(userId);
-   }
-	
-	@GetMapping("/showUserChatRoomMessages/{chatRoomId}")
-    public List<Message> getUserChatRoomMessage(@PathVariable String chatRoomId) {
-       return messageService.getUserChatRoomMessages(chatRoomId);
-   }
-	
-	//this works
 	@PostMapping(path= "/showUserChatRoomMessages")
     public List<Message> getUserChatRoomMessage(@RequestBody JSONObject chatRoomId) {
         return messageService.getUserChatRoomMessages(chatRoomId);
-    }
-
-	// Single item
-    @GetMapping(path= "/findMessage/{messageId}")
-    public Message findMessage(@PathVariable int messageId) {
-        return messageService.findMessage(messageId);
     }
 
     @PostMapping("/addMessage")

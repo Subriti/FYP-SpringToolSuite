@@ -26,11 +26,6 @@ public class CategoryController {
 	public CategoryController(CategoryService CategoryService) {
         this.CategoryService= CategoryService;
     }
-
-	@GetMapping("/showCategory")
-	 public List<Category> getCategory() {
-        return CategoryService.getCategory();
-	}
 	
 	@GetMapping("/showCategory/{TypeId}")
     public List<Category> getCategoryByType(Type CategoryType) {

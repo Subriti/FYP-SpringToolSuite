@@ -40,7 +40,6 @@ public class PostController {
        return postService.getUserPosts(userId);
    }
 	
-	// Single item
     @GetMapping(path= "/findPost/{postId}")
     public Post findPost(@PathVariable int postId) {
         return postService.findPost(postId);

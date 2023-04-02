@@ -30,16 +30,8 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public List<Message> getMessages() {
-        return messageRepository.findAll();
-    }
-
     public List<Message> getUserMessages(User userId) {
         return messageRepository.findUserMessages(userId);
-    }
-    
-    public List<Message> getUserChatRoomMessages(String chatRoomId) {
-        return messageRepository.findUserChatRoomMessages(chatRoomId);
     }
     
     public List<Message> getUserChatRoomMessages(JSONObject chatRoomId) {
@@ -49,51 +41,8 @@ public class MessageService {
         return messageRepository.findUserChatRoomMessages(chatRoom);
     }
     
-    /*
-     * public List<String> getUserChatRooms(User userId) {
-     * System.out.println(userId);
-     * System.out.println(userId.getUserId());
-     * return messageRepository.findUserChatRooms(userId);
-     * }
-     * 
-     * public List<String> getUserChatRooms(JSONObject userName,User userId) {
-     * JSONObject userObject= new JSONObject(userName);
-     * 
-     * String userNames= userObject.getAsString("user_name");
-     * System.out.println(userNames);
-     * System.out.println(userId);
-     * System.out.println(userId.getUserId());
-     * 
-     * return messageRepository.findUserChatRooms(userNames,
-     * userId.getUserId(),userNames, userId.getUserId());
-     * }
-     */
-    
-    /*
-     * public List<String> getUserChatRooms(String username, int userId) {
-     * System.out.println(userId);
-     * System.out.println(username);
-     * return messageRepository.findUserChatRooms(username, userId, username);
-     * }
-     */
-    
-    
-    //this works
     public List<String> getUserChatRooms(String username, int userId) {
-        System.out.println(userId);
-        System.out.println(username);
         
-        /*
-         * String
-         * queryString="WITH first_query AS (SELECT DISTINCT chat_room_id, reciever_user_id FROM message WHERE chat_room_id LIKE '%"
-         * +username+"%' AND sender_user_id in ("+userId+")), \r\n"
-         * +
-         * "second_query AS (SELECT DISTINCT chat_room_id, sender_user_id FROM message WHERE chat_room_id LIKE '%"
-         * +username+"%' AND sender_user_id not in ("+userId+"))\r\n"
-         * +
-         * "SELECT * FROM first_query UNION SELECT * FROM second_query WHERE NOT EXISTS (SELECT 1 FROM first_query);"
-         * ;
-         */
         String queryString="WITH chat_rooms AS (SELECT chat_room_id, sender_user_id, reciever_user_id FROM message \r\n"
                 + "                    UNION SELECT chat_room_id, reciever_user_id AS sender_user_id, sender_user_id AS reciever_user_id FROM message)\r\n"
                 + "SELECT DISTINCT chat_room_id, \r\n"
@@ -141,7 +90,6 @@ public class MessageService {
         });
     }
     
-    //this works
     public JSONObject getUserChatRoomId(String senderUsername, String recieverUsername) {
         senderUsername= "'%"+senderUsername+"%'";
         recieverUsername= "'%"+recieverUsername+"%'";
@@ -167,12 +115,6 @@ public class MessageService {
             }
         });
         return chatRoomId;
-
-        /*
-         * System.out.println(messageRepository.getUserChatRoomId(senderUsername,
-         * recieverUsername));
-         * return messageRepository.getUserChatRoomId(senderUsername, recieverUsername);
-         */
     }
 
     

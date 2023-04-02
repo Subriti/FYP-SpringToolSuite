@@ -103,7 +103,6 @@ public class UserService implements UserDetailsService {
     public JSONObject addNewUser(User user) {
         JSONObject jsonObject = new JSONObject();
         Optional<User> userOptional = userRepository.findUserByUsername(user.getUserName());
-        System.out.println(userOptional);
         if (userOptional.isPresent()) {
             jsonObject.clear();
             jsonObject.put("Error message", "Username is already taken");
@@ -115,12 +114,10 @@ public class UserService implements UserDetailsService {
 
         // checking if password abides by the regex with digits and capital letters
         if (PasswordValidator.isValid(password)) {
-
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             hashedPassword = passwordEncoder.encode(password);
 
             user.setPassword(hashedPassword);
-
             userRepository.save(user);
 
             // storing the passwords to restrict the use of previously used passwords
@@ -359,21 +356,16 @@ public class UserService implements UserDetailsService {
     @Transactional
     public JSONObject Login(String email, String password) {
         JSONObject jsonObject = new JSONObject();
-
         Optional<User> userOptional = userRepository.findUserByEmail(email);
-
+        
         if (userOptional.isPresent()) {
             // If the email is valid --> then login
             String passwordString = userRepository.findPasswordByEmail(email);
-            System.out.println(passwordString);
-
+            
             if (BCrypt.checkpw(password, passwordString)) {
-
                 User user = userRepository.findByEmail(email);
-
                 try {
-                    authenticationManager
-                            .authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), passwordString));
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), passwordString));
                 } catch (BadCredentialsException e) {
                     jsonObject.put("error", "INVALID CREDENTIALS " + e);
                     return jsonObject;
@@ -381,9 +373,8 @@ public class UserService implements UserDetailsService {
 
                 UserDetails userDetails = loadUserByUsername(user.getUserName());
                 final String token = jwtUtility.generateToken(userDetails);
-
+                
                 jsonObject.put("message", "Successful Login !! ");
-
                 jsonObject.put("user_id", user.getUserId());
                 jsonObject.put("user_name", user.getUserName());
                 jsonObject.put("email", user.getEmail());
@@ -395,14 +386,10 @@ public class UserService implements UserDetailsService {
                 jsonObject.put("is_admin", user.getIsAdmin());
                 jsonObject.put("hide_email", user.getHideEmail());
                 jsonObject.put("hide_phone", user.getHidePhone());
-
-                System.out.println(jsonObject);
                 return jsonObject;
             }
         }
         jsonObject.put("error", "UserName or Password is invalid");
-        System.out.println("UserName or Password is invalid");
-
         return jsonObject;
     }
 

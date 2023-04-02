@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.project.Model.Post;
 import com.example.project.Model.Report;
 import com.example.project.Service.ReportService;
 
@@ -43,11 +43,9 @@ public class ReportController {
     public void deleteReport(@PathVariable("report_id") int reportId) {
         reportService.deleteReport(reportId);
     }
-
-    /*
-     * @PutMapping(path = "/updateReport/{postId}")
-     * public JSONObject updateReport(@PathVariable("postId") Post postId) {
-     * return reportService.updateReportStatus(postId);
-     * }
-     */
+    
+    @PutMapping(path = "reviewReport/{report_id}")
+    public Report reviewReport(@PathVariable("report_id") int reportId, @RequestParam Boolean isReviewed) {
+        return reportService.reviewReport(reportId, isReviewed);
+    }
 }

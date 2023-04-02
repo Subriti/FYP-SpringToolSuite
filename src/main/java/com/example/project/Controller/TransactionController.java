@@ -22,44 +22,33 @@ import net.minidev.json.JSONObject;
 @RequestMapping(path = "api/transaction")
 public class TransactionController {
 
-	private final TransactionService transactionService;
+    private final TransactionService transactionService;
 
-	@Autowired
-	public TransactionController(TransactionService transactionService) {
+    @Autowired
+    public TransactionController(TransactionService transactionService) {
         this.transactionService= transactionService;
     }
 
-	@GetMapping("/showTransactions")
-	 public List<Transaction> getTransaction() {
-        return transactionService.getTransaction();
-	}
-	
-	@GetMapping("/showUserTransactions/{userId}")
-    public List<Transaction> findUserTransaction(@PathVariable int userId) {
-       return transactionService.findUserTransaction(userId);
-   }
-	
-	@GetMapping("/showRecievedTransactions/{userId}")
+    @GetMapping("/showRecievedTransactions/{userId}")
     public List<Transaction> findRecievedTransaction(@PathVariable int userId) {
-       return transactionService.findRecievedTransaction(userId);
-   }
-	
-	@GetMapping("/showGivenTransactions/{userId}")
+        return transactionService.findRecievedTransaction(userId);
+    }
+
+    @GetMapping("/showGivenTransactions/{userId}")
     public List<Transaction> findGivenTransaction(@PathVariable int userId) {
-       return transactionService.findGivenTransaction(userId);
-   }
-	
-	@GetMapping("/showOngoingTransactions/{userId}")
+        return transactionService.findGivenTransaction(userId);
+    }
+
+    @GetMapping("/showOngoingTransactions/{userId}")
     public List<Transaction> findOngoingTransaction(@PathVariable int userId) {
-       return transactionService.findOnGoingTransaction(userId);
-   }
-	
-	// Single item
+        return transactionService.findOnGoingTransaction(userId);
+    }
+
     @GetMapping(path= "/findTransaction/{transactionId}")
     public Transaction findTransaction(@PathVariable int transactionId) {
         return transactionService.findTransaction(transactionId);
     }
-    
+
     @GetMapping(path= "/getRating/{userId}")
     public Rating findRating(@PathVariable int userId) {
         return transactionService.findRatingAndCount(userId);
@@ -67,16 +56,16 @@ public class TransactionController {
 
     @PostMapping("/addTransaction")
     public JSONObject addNewTransaction(@RequestBody Transaction transaction) {
-    	return transactionService.addNewTransaction(transaction);
-	}
+        return transactionService.addNewTransaction(transaction);
+    }
 
     @DeleteMapping(path= "/deleteTransaction/{transactionId}")
     public void deleteTransaction(@PathVariable("transactionId") int transactionId) {
-    	transactionService.deleteTransaction(transactionId);
+        transactionService.deleteTransaction(transactionId);
     }
 
     @PutMapping(path = "/updateTransaction")
     public JSONObject updateTransaction(@RequestBody Transaction transaction) {
-    	return transactionService.updateTransaction(transaction);
+        return transactionService.updateTransaction(transaction);
     }
 }

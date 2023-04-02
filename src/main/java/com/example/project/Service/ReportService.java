@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.project.Model.Post;
 import com.example.project.Model.Report;
+import com.example.project.Model.User;
 import com.example.project.Repository.ReportRepository;
 
 import net.minidev.json.JSONObject;
@@ -24,8 +25,8 @@ public class ReportService {
     }
 
     public List<Report> getReports() {
-        return reportRepository.findAll();
-        //return reportRepository.getAll();
+        //return reportRepository.findAll();
+        return reportRepository.getAll();
     }
 
     public JSONObject addReport(Report report) {
@@ -42,6 +43,14 @@ public class ReportService {
             throw new IllegalStateException("report with id " + reportId + " does not exist");
         }
         reportRepository.deleteById(reportId);
+    }
+    
+    @Transactional
+    public Report reviewReport(int reportId, Boolean isReviewed) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new IllegalStateException("Report with ID " + reportId + " does not exist"));
+        report.setIsReviewed(isReviewed);
+        return report;
     }
 
     /*
