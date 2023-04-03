@@ -56,17 +56,6 @@ public class Report implements Serializable {
         super();
     }
 
-
-    public Report(User reportedBy, Post postId, String feedback, Date reportDate)
-    {
-        super();
-        this.reportedBy = reportedBy;
-        this.postId = postId;
-        this.feedback = feedback;
-        this.reportDate = reportDate;
-    }
-
-
     public Report(User reportedBy, Post postId, String feedback, Date reportDate, Boolean isReviewed) {
         super();
         this.reportedBy = reportedBy;

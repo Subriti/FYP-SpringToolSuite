@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,9 +21,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-@JsonPropertyOrder({ "transaction_id, reciever_user_id, post_id, rating, transaction_date" })
-
-//@IdClass(TransactionPK.class)
+@JsonPropertyOrder({ "transaction_id, reciever_user_id, post_id, rating, transaction_date, status" })
 
 @Entity
 @Table(name = "Transaction")
@@ -56,6 +56,10 @@ public class Transaction implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "transaction_date")
 	private Date transactionDate;
+	
+	 @Enumerated(EnumType.STRING)
+	 @Column(name= "status")
+	 private Status status;
 
 
 	public Transaction() {
@@ -63,12 +67,13 @@ public class Transaction implements Serializable{
 	}
 
 	
-	public Transaction(User recieverUserId, Post postId, float rating, Date transactionDate) {
+	public Transaction(User recieverUserId, Post postId, float rating, Date transactionDate, Status status) {
         super();
         this.recieverUserId = recieverUserId;
         this.postId = postId;
         this.rating = rating;
         this.transactionDate = transactionDate;
+        this.status= status;
     }
 	
 	 
@@ -123,4 +128,13 @@ public class Transaction implements Serializable{
 		this.transactionDate = transactionDate;
 	}
 
+    @JsonGetter("status")
+    public Status getStatus() {
+        return status;
+    }
+
+    @JsonSetter("status")
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

@@ -39,7 +39,6 @@ select t.transaction_id, t.rating, t.transaction_date, t.post_id, t.reciever_use
     @Query(value = "select * from transaction t join post p on p.post_id= t.post_id where p.post_by=?1 and p.donation_status=3  order by t.transaction_date desc", nativeQuery = true)
     List<Transaction> findGivenDonations(int userId);
     
-    @Query(value="select t.transaction_id, t.rating, t.transaction_date, t.post_id, t.reciever_user_id from transaction t \r\n"
-            + "join post p on p.post_id= t.post_id where p.post_by=?1 and p.donation_status=2 order by t.transaction_date desc", nativeQuery = true)
+    @Query(value="select * from transaction t join post p on p.post_id= t.post_id where p.post_by=?1 and p.donation_status=2 and t.status=\'ACTIVE\' order by t.transaction_date desc", nativeQuery = true)
     List<Transaction> findOngoingTransactions(int userId);
 }

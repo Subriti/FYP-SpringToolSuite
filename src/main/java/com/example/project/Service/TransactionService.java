@@ -14,20 +14,25 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.project.Model.DonationStatus;
+import com.example.project.Model.Post;
 import com.example.project.Model.Rating;
+import com.example.project.Model.Status;
 import com.example.project.Model.Transaction;
+import com.example.project.Repository.PostRepository;
 import com.example.project.Repository.TransactionRepository;
-
 import net.minidev.json.JSONObject;
 
 @Service
 public class TransactionService {
 
     private final TransactionRepository TransactionRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public TransactionService(TransactionRepository TransactionRepository) {
+    public TransactionService(TransactionRepository TransactionRepository, PostRepository postRepository) {
         this.TransactionRepository = TransactionRepository;
+        this.postRepository = postRepository;
     }
 
     public List<Transaction> getTransaction() {
@@ -37,7 +42,6 @@ public class TransactionService {
     public List<Transaction> findUserTransaction(int userId) {
         return TransactionRepository.findUserTransaction(userId);
     }
-    
     
     public List<Transaction> findRecievedTransaction(int userId) {
         return TransactionRepository.findRecievedDonations(userId);
@@ -51,6 +55,26 @@ public class TransactionService {
         return TransactionRepository.findOngoingTransactions(userId);
     }
     
+    @Transactional
+    public Transaction updateTransactionStatus(int transactionId) {
+        Transaction transaction = TransactionRepository.findById(transactionId)
+                .orElseThrow(
+                        () -> new IllegalStateException("Transaction with ID " + transactionId + " does not exist"));
+
+        transaction.setStatus(Status.CANCELED);
+        
+        //change status of cloth donation to active again
+        Post post= postRepository.findById(transaction.getPostId().getPostId())  
+                .orElseThrow(
+                () -> new IllegalStateException("Post with ID " + transaction.getPostId().getPostId() + " does not exist"));
+       
+        DonationStatus donationStatus= new DonationStatus();
+        donationStatus.setDonationStatusId(1);
+       
+        post.setDonationStatus(donationStatus);
+        
+        return transaction;
+    }
 
     public Transaction findTransaction(int transactionId) {
         return TransactionRepository.findById(transactionId)
@@ -96,15 +120,6 @@ public class TransactionService {
                 return s;
             }
         });
-        
-       /* Rating transaction= TransactionRepository.getRatingAndCount(userId);
-        System.out.println(transaction.getClothDonated());
-        System.out.println(transaction.getRating());
-        
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("cloth_donated", transaction.getClothDonated());
-        jsonObject.put("rating", transaction.getRating());
-        return jsonObject;*/
     }
     
 

@@ -68,4 +68,9 @@ public class TransactionController {
     public JSONObject updateTransaction(@RequestBody Transaction transaction) {
         return transactionService.updateTransaction(transaction);
     }
+    
+    @PutMapping(path = "/updateTransactionStatus/{transactionId}")
+    public Transaction updateTransactionStatus(@PathVariable("transactionId") int transactionId) {
+        return transactionService.updateTransactionStatus(transactionId);
+    }
 }
