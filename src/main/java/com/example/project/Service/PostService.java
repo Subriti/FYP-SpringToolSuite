@@ -12,6 +12,7 @@ import com.example.project.Model.InterestedUsers;
 import com.example.project.Model.Notification;
 import com.example.project.Model.Post;
 import com.example.project.Model.Report;
+import com.example.project.Model.Transaction;
 import com.example.project.Model.User;
 import com.example.project.Repository.ClothesRepository;
 import com.example.project.Repository.DonationStatusRepository;
@@ -19,6 +20,7 @@ import com.example.project.Repository.InterestedUsersRepository;
 import com.example.project.Repository.NotificationRepository;
 import com.example.project.Repository.PostRepository;
 import com.example.project.Repository.ReportRepository;
+import com.example.project.Repository.TransactionRepository;
 
 import net.minidev.json.JSONObject;
 
@@ -31,16 +33,18 @@ public class PostService {
     private final DonationStatusRepository donationStatusRepository;
     private final NotificationRepository notificationRepository;
     private final ReportRepository reportRepository;
+    private final TransactionRepository transactionRepository;
 
 
     @Autowired
-    public PostService(PostRepository postRepository, InterestedUsersRepository interestedUsersRepository, ClothesRepository clothesRepository, DonationStatusRepository donationStatusRepository, NotificationRepository notificationRepository, ReportRepository reportRepository) {
+    public PostService(PostRepository postRepository, InterestedUsersRepository interestedUsersRepository, ClothesRepository clothesRepository, DonationStatusRepository donationStatusRepository, NotificationRepository notificationRepository, ReportRepository reportRepository, TransactionRepository transactionRepository) {
         this.postRepository = postRepository;
         this.interestedUsersRepository = interestedUsersRepository;
         this.clothesRepository = clothesRepository;
         this.donationStatusRepository = donationStatusRepository;
         this.notificationRepository= notificationRepository;
         this.reportRepository= reportRepository;
+        this.transactionRepository= transactionRepository;
     }
 
     public List<Post> getPosts() {
@@ -92,6 +96,13 @@ public class PostService {
         List<Report> reports = reportRepository.getReports(post);
         for (Report report : reports) {
             reportRepository.deleteById(report.getReportId());
+        }
+        
+        
+        //remove the transaction
+        List<Transaction> transactions = transactionRepository.findTransactionList(post.getPostId());
+        for (Transaction transaction : transactions) {
+            transactionRepository.deleteById(transaction.getTransactionId());
         }
         
         //on removal of the post, also remove its cloth details

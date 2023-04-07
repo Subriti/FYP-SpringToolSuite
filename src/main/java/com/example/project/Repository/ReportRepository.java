@@ -11,10 +11,9 @@ import com.example.project.Model.Report;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    
-      @Query(value = "SELECT * from report r where r.is_reviewed=false order by r.report_date",nativeQuery=true)
-      List<Report> getAll();
-     
+
+    @Query(value = "SELECT * from report r where r.is_reviewed=false order by r.report_date", nativeQuery = true)
+    List<Report> getAll();
 
     @Query(value = "SELECT * from report r where r.post_id=?1", nativeQuery = true)
     List<Report> getReports(Post postId);

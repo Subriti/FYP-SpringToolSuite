@@ -16,54 +16,54 @@ import com.example.project.Repository.NotificationRepository;
 @Service
 public class NotificationService {
 
-	private final NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
-	@Autowired
-	public NotificationService(NotificationRepository notificationRepository) {
-		this.notificationRepository = notificationRepository;
-	}
+    @Autowired
+    public NotificationService(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
+    }
 
-	public List<Notification> getNotifications() {
-		return notificationRepository.findAll();
-	}
-	
-	 public List<Notification> getUserNotifications(User userId) {
-	        return notificationRepository.findUserNotifications(userId);
-	    }
-	 
-	 public List<Notification> findPostNotifications(Post postId) {
-         return notificationRepository.findPostNotifications(postId);
-     }
+    public List<Notification> getNotifications() {
+        return notificationRepository.findAll();
+    }
 
-	public Notification addNotification(Notification notification) {
-	    return notificationRepository.save(notification);
-	}
+    public List<Notification> getUserNotifications(User userId) {
+        return notificationRepository.findUserNotifications(userId);
+    }
 
-	public void deleteNotification(int notificationId) {
-		boolean exists = notificationRepository.existsById(notificationId);
-		if (!exists) {
-			throw new IllegalStateException("notification with id " + notificationId + " does not exist");
-		}
-		notificationRepository.deleteById(notificationId);
-	}
+    public List<Notification> findPostNotifications(Post postId) {
+        return notificationRepository.findPostNotifications(postId);
+    }
 
-	@Transactional
-	public void updateNotification(int notificationId, String title, String message, Post data, String recipientToken) {
-		Notification notification = notificationRepository.findById(notificationId)
-				.orElseThrow(() -> new IllegalStateException("notification with id " + notificationId + " does not exist"));
+    public Notification addNotification(Notification notification) {
+        return notificationRepository.save(notification);
+    }
 
-		if (title != null && title.length() > 0 && !Objects.equals(notification.getTitle(), title)) {
-		    notification.setTitle(title);
-		}
-		if (message != null && !Objects.equals(notification.getMessage(), message)) {
+    public void deleteNotification(int notificationId) {
+        boolean exists = notificationRepository.existsById(notificationId);
+        if (!exists) {
+            throw new IllegalStateException("notification with id " + notificationId + " does not exist");
+        }
+        notificationRepository.deleteById(notificationId);
+    }
+
+    @Transactional
+    public void updateNotification(int notificationId, String title, String message, Post data, String recipientToken) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new IllegalStateException("notification with id " + notificationId + " does not exist"));
+
+        if (title != null && title.length() > 0 && !Objects.equals(notification.getTitle(), title)) {
+            notification.setTitle(title);
+        }
+        if (message != null && !Objects.equals(notification.getMessage(), message)) {
             notification.setMessage(message);
         }
-		if (data != null && !Objects.equals(notification.getData(), data)) {
+        if (data != null && !Objects.equals(notification.getData(), data)) {
             notification.setData(data);
         }
-		if (recipientToken != null && !Objects.equals(notification.getRecipientToken(), recipientToken)) {
+        if (recipientToken != null && !Objects.equals(notification.getRecipientToken(), recipientToken)) {
             notification.setRecipientToken(recipientToken);
         }
-	}
+    }
 
 }

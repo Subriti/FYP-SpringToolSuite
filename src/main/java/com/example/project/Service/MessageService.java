@@ -40,19 +40,6 @@ public class MessageService {
         
         return messageRepository.findUserChatRoomMessages(chatRoom);
     }
-    
-    public List<String> getUserChatRooms(String username, int userId) {
-        
-        String queryString="WITH chat_rooms AS (SELECT chat_room_id, sender_user_id, reciever_user_id FROM message \r\n"
-                + "                    UNION SELECT chat_room_id, reciever_user_id AS sender_user_id, sender_user_id AS reciever_user_id FROM message)\r\n"
-                + "SELECT DISTINCT chat_room_id, \r\n"
-                + "  CASE \r\n"
-                + "    WHEN sender_user_id = "+userId+" THEN reciever_user_id\r\n"
-                + "    ELSE sender_user_id\r\n"
-                + "  END AS reciever_user_id\r\n"
-                + "FROM chat_rooms WHERE sender_user_id = "+userId+"";
-        return getAll(queryString);
-    }
 
     private JdbcTemplate template;
     @Autowired
@@ -69,9 +56,20 @@ public class MessageService {
         this.template = template;
     }
     
+    public List<String> getUserChatRooms(String username, int userId) {
+        
+        String queryString="WITH chat_rooms AS (SELECT chat_room_id, sender_user_id, reciever_user_id FROM message \r\n"
+                + "                    UNION SELECT chat_room_id, reciever_user_id AS sender_user_id, sender_user_id AS reciever_user_id FROM message)\r\n"
+                + "SELECT DISTINCT chat_room_id, \r\n"
+                + "  CASE \r\n"
+                + "    WHEN sender_user_id = "+userId+" THEN reciever_user_id\r\n"
+                + "    ELSE sender_user_id\r\n"
+                + "  END AS reciever_user_id\r\n"
+                + "FROM chat_rooms WHERE sender_user_id = "+userId+"";
+        return getAll(queryString);
+    }
+    
     public List<String> getAll(String queryString) {
-        System.out.println(queryString);
-
         return template.query(queryString, new ResultSetExtractor<List<String>>() {
 
             @Override
@@ -82,7 +80,6 @@ public class MessageService {
                     list1.add(rs.getString(1));
                     list1.add(rs.getString(2));
                     list.addAll(list1);
-                    System.out.println(list);
                 }
                 return list;
             }
@@ -95,7 +92,6 @@ public class MessageService {
         recieverUsername= "'%"+recieverUsername+"%'";
         
         String queryString= "SELECT DISTINCT chat_room_id FROM message WHERE chat_room_id LIKE "+senderUsername+" and chat_room_id LIKE "+recieverUsername;
-        System.out.println(queryString);
         
         JSONObject chatRoomId= new JSONObject();
         
@@ -105,7 +101,6 @@ public class MessageService {
                 String idString= "";
                 while (rs.next()) {
                     idString= rs.getString(1);
-                    System.out.println(idString);
                     chatRoomId.put("chat_room_id", idString);
                 }
                 if (chatRoomId.isEmpty()) {

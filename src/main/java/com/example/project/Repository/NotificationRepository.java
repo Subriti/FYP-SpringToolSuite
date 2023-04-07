@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.project.Model.InterestedUsers;
 import com.example.project.Model.Notification;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
