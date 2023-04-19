@@ -14,6 +14,13 @@ public interface PostRepository extends JpaRepository<Post,Integer> {
     @Query("SELECT p FROM Post p WHERE p.postBy=?1 order by p.createdDatetime desc")
     List<Post> findUserPost(User userId);
     
-    @Query("SELECT p FROM Post p ORDER BY p.createdDatetime desc")
-    List<Post> findAllPosts();
+    //@Query("SELECT p FROM Post p ORDER BY p.createdDatetime desc")
+    @Query("SELECT p FROM Post p\r\n"
+    + "WHERE p.postBy NOT IN (\r\n"
+    + "    SELECT blockedUser FROM BlockList WHERE blockedBy= ?1\r\n"
+    + ")\r\n"
+    + "AND p.postBy NOT IN (\r\n"
+    + "    SELECT blockedBy FROM BlockList WHERE blockedUser = ?1\r\n"
+    + ") ORDER BY p.createdDatetime desc\r\n")
+    List<Post> findAllPosts(User userId);
 }

@@ -38,10 +38,17 @@ public class BlockListService {
 
 	public JSONObject blockUser(BlockList blockList) {
         JSONObject jsonBody= new JSONObject();
+	    BlockList blocks = blockListRepository.findBlockList(blockList.getBlockedUser(), blockList.getBlockedBy());
+	            if (blocks!=null) {
+                    jsonBody.clear();
+                    jsonBody.put("Error Message", "User is already Blocked");
+                }else {
+                    blockListRepository.save(blockList);
+                    jsonBody.clear();
+                    jsonBody.put("Success Message", "User Blocked");
+                }
         
-	    blockListRepository.save(blockList);
-	    
-        jsonBody.put("Success Message", "User Blocked");
+	  
         return jsonBody;
 	    
 	}
@@ -50,9 +57,15 @@ public class BlockListService {
 	    JSONObject jsonBody= new JSONObject();
 	    
 	    BlockList block= blockListRepository.findBlockList(blockList.getBlockedUser(), blockList.getBlockedBy());
-	    blockListRepository.deleteById(block.getBlockedUserId());
-	    
-	    jsonBody.put("Success Message", "User Unblocked");
+	    if (block!=null) {
+            jsonBody.clear();  
+            blockListRepository.deleteById(block.getBlockedUserId());
+            jsonBody.put("Success Message", "User Unblocked");
+        }else {
+            jsonBody.clear();
+            jsonBody.put("Error Message", "User is already Blocked");
+        }
+	  
 	    return jsonBody;
 	}
 	

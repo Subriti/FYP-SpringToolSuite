@@ -44,6 +44,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         System.out.println("Client disconnected");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         String msg = String.valueOf(message.getPayload());
@@ -52,7 +53,6 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
         System.out.println(msg);
         
         if(!msg.equals("Hello World!")) {
-            System.out.println("Not hello world");
             JSONParser parser = new JSONParser();  
             try {
                 JSONObject json = (JSONObject) parser.parse(msg);

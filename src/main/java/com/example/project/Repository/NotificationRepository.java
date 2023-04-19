@@ -12,7 +12,7 @@ import com.example.project.Model.User;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification,Integer> {
-    @Query("SELECT m FROM Notification m WHERE m.recieverId=?1")
+    @Query("SELECT m FROM Notification m WHERE m.recieverId=?1 ORDER by m.notificationId DESC")
     List<Notification> findUserNotifications(User userId);
     
     @Query("SELECT n FROM Notification n WHERE n.data=?1")

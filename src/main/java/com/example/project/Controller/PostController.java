@@ -30,10 +30,17 @@ public class PostController {
         this.postService= postService;
     }
 
-	@GetMapping("/showPosts")
-	 public List<Post> getPost() {
-        return postService.getPosts();
-	}
+    /*
+     * @GetMapping("/showPosts")
+     * public List<Post> getPost() {
+     * return postService.getPosts();
+     * }
+     */
+	
+	@GetMapping("/showPosts/{postBy}")
+    public List<Post> getPost(@PathVariable("postBy") User userId) {
+       return postService.getPosts(userId);
+   }	
 	
 	@GetMapping("/showUserPosts/{postBy}")
     public List<Post> getUserPost(@PathVariable("postBy") User userId) {

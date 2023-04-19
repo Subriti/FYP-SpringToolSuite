@@ -47,8 +47,14 @@ public class PostService {
         this.transactionRepository= transactionRepository;
     }
 
-    public List<Post> getPosts() {
-        return postRepository.findAllPosts();
+    /*
+     * public List<Post> getPosts() {
+     * return postRepository.findAllPosts();
+     * }
+     */
+    
+    public List<Post> getPosts(User userId) {
+        return postRepository.findAllPosts(userId);
     }
 
     public List<Post> getUserPosts(User userId) {
