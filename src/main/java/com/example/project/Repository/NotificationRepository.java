@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.example.project.Model.Notification;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
+import com.google.common.base.Optional;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification,Integer> {
@@ -17,4 +18,7 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
     
     @Query("SELECT n FROM Notification n WHERE n.data=?1")
     List<Notification> findPostNotifications(Post postId);
+    
+    @Query("SELECT n FROM Notification n WHERE n.data=?1 and n.senderId=?2 and n.title='Someone was interested on your post'")
+    Notification findNotification(Post postId, User userId);
 }

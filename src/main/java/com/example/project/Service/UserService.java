@@ -37,7 +37,6 @@ import net.minidev.json.JSONObject;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
     private final UserHistoryRepository passwordHistoryRepository;
 
     @Autowired
@@ -45,10 +44,9 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
         this.passwordHistoryRepository = passwordHistoryRepository;
     }
-
+    
     @Autowired
     private JWTUtility jwtUtility;
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -253,9 +251,11 @@ public class UserService implements UserDetailsService {
 
         // storing last used passwords in a list
         List<String> list = userRepository.findPreviousPasswordsByID(userId);
+        System.out.println(list);
         int i = 0;
 
         if (oldPassword != null && oldPassword.length() > 0) {
+            System.out.println(oldPassword + user.getPassword());
 
             if (BCrypt.checkpw(oldPassword, user.getPassword())) {
 

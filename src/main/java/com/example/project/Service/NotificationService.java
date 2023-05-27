@@ -11,6 +11,7 @@ import com.example.project.Model.Notification;
 import com.example.project.Model.Post;
 import com.example.project.Model.User;
 import com.example.project.Repository.NotificationRepository;
+import com.google.common.base.Optional;
 
 
 @Service
@@ -36,6 +37,11 @@ public class NotificationService {
     }
 
     public Notification addNotification(Notification notification) {
+        Notification exists= notificationRepository.findNotification(notification.getData(), notification.getSenderId());
+        if (exists!=null) {
+            System.out.println("Not null");
+            notificationRepository.deleteById(exists.getNotificationId());
+        }
         return notificationRepository.save(notification);
     }
 
